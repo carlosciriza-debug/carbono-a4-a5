@@ -1,10 +1,12 @@
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { Map as MapaMapLibre, NavigationControl, ScaleControl, setWorkerUrl } from 'maplibre-gl'
+import { type GeoJSONSource, Map as MapaMapLibre, NavigationControl, ScaleControl, setWorkerUrl } from 'maplibre-gl'
 import urlWorkerMapLibre from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url'
 import { type Ref, useEffect, useImperativeHandle, useLayoutEffect, useRef } from 'react'
 import { TerraDraw, TerraDrawPolygonMode, TerraDrawSelectMode, type GeoJSONStoreFeatures } from 'terra-draw'
 import { TerraDrawMapLibreGLAdapter } from 'terra-draw-maplibre-gl-adapter'
-import type { Feature, Polygon } from 'geojson'
+import type { Feature, FeatureCollection, Point, Polygon } from 'geojson'
+import { CATEGORIA_POR_ID } from '../compartilhado/categorias'
+import type { Ponto } from '../compartilhado/terreno'
 import { calcularLote, type Lote } from './lote'
 import type { ResultadoBusca } from './busca'
 
@@ -26,11 +28,29 @@ export type ControleMapa = {
 
 type Props = {
   ref?: Ref<ControleMapa>
+  pontos: Ponto[]
   aoMudarLote: (lote: Lote | null) => void
   aoMudarDesenho: (desenhando: boolean) => void
 }
 
-export function Mapa({ ref, aoMudarLote, aoMudarDesenho }: Props) {
+function colecaoDePontos(pontos: Ponto[]): FeatureCollection<Point> {
+  return {
+    type: 'FeatureCollection',
+    features: pontos.map((p) => ({
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: p.coordenadas },
+      properties: {
+        id: p.id,
+        nome: p.nome ?? 'Sem nome',
+        cor: CATEGORIA_POR_ID[p.categoria].cor,
+        letra: CATEGORIA_POR_ID[p.categoria].letra,
+        ativo: p.ativo,
+      },
+    })),
+  }
+}
+
+export function Mapa({ ref, pontos, aoMudarLote, aoMudarDesenho }: Props) {
   const container = useRef<HTMLDivElement>(null)
   const mapa = useRef<MapaMapLibre | null>(null)
   const desenho = useRef<TerraDraw | null>(null)
@@ -41,6 +61,13 @@ export function Mapa({ ref, aoMudarLote, aoMudarDesenho }: Props) {
   useLayoutEffect(() => {
     callbacks.current = { aoMudarLote, aoMudarDesenho }
   })
+
+  const pontosAtuais = useRef(pontos)
+  useEffect(() => {
+    pontosAtuais.current = pontos
+    const fonte = mapa.current?.getSource('pontos') as GeoJSONSource | undefined
+    fonte?.setData(colecaoDePontos(pontos))
+  }, [pontos])
 
   useEffect(() => {
     const m = new MapaMapLibre({
@@ -54,6 +81,34 @@ export function Mapa({ ref, aoMudarLote, aoMudarDesenho }: Props) {
     mapa.current = m
 
     m.on('load', () => {
+      // Pontos de fornecedores, abaixo do lote (as camadas do Terra Draw entram depois).
+      m.addSource('pontos', { type: 'geojson', data: colecaoDePontos(pontosAtuais.current) })
+      m.addLayer({
+        id: 'pontos-circulo',
+        type: 'circle',
+        source: 'pontos',
+        paint: {
+          'circle-radius': 8,
+          'circle-color': ['get', 'cor'],
+          'circle-opacity': ['case', ['get', 'ativo'], 1, 0.3],
+          'circle-stroke-color': '#ffffff',
+          'circle-stroke-width': 1.5,
+        },
+      })
+      m.addLayer({
+        id: 'pontos-letra',
+        type: 'symbol',
+        source: 'pontos',
+        layout: {
+          'text-field': ['get', 'letra'],
+          'text-font': ['Noto Sans Bold'],
+          'text-size': 10,
+          'text-allow-overlap': true,
+          'text-ignore-placement': true,
+        },
+        paint: { 'text-color': '#ffffff' },
+      })
+
       const td = new TerraDraw({
         adapter: new TerraDrawMapLibreGLAdapter({ map: m }),
         modes: [

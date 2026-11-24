@@ -4,7 +4,7 @@ Mapa interativo para escolher um terreno em qualquer lugar do Brasil e ver o car
 
 A ferramenta encontra fornecedores e destinos de resíduos perto do terreno com dados abertos do OpenStreetMap e calcula as distâncias reais por estrada. Ela complementa as calculadoras de ciclo de vida e não as substitui.
 
-> Em construção. Etapa atual: 1 (mapa, busca de endereço e desenho do lote).
+> Em construção. Etapa atual: 2 (fornecedores e destinos de resíduos no entorno).
 
 **Endereço público:** https://obrunoheringer1.github.io/carbono-a4-a5/
 
@@ -36,11 +36,36 @@ src/
 2. Clique em **Desenhar lote** e marque os vértices no mapa. Para fechar, clique no primeiro vértice.
 3. Para editar, arraste os vértices; os pontos no meio das arestas criam vértices novos. Para mover, arraste o lote.
 4. O painel mostra a área em m² e as coordenadas do centro.
+5. Em **Fornecedores**, escolha o raio (25, 50, 100 ou 200 km). Os pontos aparecem no mapa, com cor e letra por categoria, e na lista, do mais perto ao mais longe (em linha reta).
 
 ## Serviços externos
 
 - **Mapa base:** [OpenFreeMap](https://openfreemap.org/), estilo Positron, sem chave.
+- **Fornecedores e destinos de resíduos:** base fixa extraída do OpenStreetMap pelo [Overpass](https://wiki.openstreetmap.org/wiki/Overpass_API) e guardada em `public/dados/fornecedores-br.json`. O navegador baixa a base uma vez e filtra pelo raio localmente, sem consultar o Overpass a cada lote. Escolhemos assim porque o servidor público do Overpass é instável e a política dele desencoraja aplicações públicas que dependam dele a cada uso. A data da extração aparece na interface.
 - **Busca de endereço:** [Nominatim](https://nominatim.org/), servidor público do OpenStreetMap. A ferramenta segue a [política de uso](https://operations.osmfoundation.org/policies/nominatim/): uma consulta por clique ou Enter (nunca a cada tecla), no máximo uma por segundo, resultados repetidos vindos do cache e identificação pelo endereço do site. O servidor público é para uso leve; se a ferramenta passar a ter muitos usuários, será preciso um servidor próprio ou um serviço pago.
+
+## Base de fornecedores
+
+As categorias e as etiquetas do OpenStreetMap ficam em `src/dados-fixos/categorias.json`. Para mudar uma categoria ou atualizar os dados:
+
+```bash
+npm run extrair-fornecedores
+```
+
+O script faz uma consulta por categoria, com pausa entre elas, e leva alguns minutos. Se o servidor principal falhar, ele tenta um servidor reserva.
+
+Extração de 24/11/2026, Brasil inteiro:
+
+| Categoria | Pontos |
+|---|---|
+| Concreto e cimento | 16 |
+| Aço | 16 |
+| Madeira | 463 |
+| Agregados | 6.380 |
+| Material de construção em geral | 1.261 |
+| Destino de resíduos | 1.596 |
+
+A cobertura de concreto e aço é muito baixa: no centro do Rio, não há nenhum ponto dessas categorias num raio de 50 km. Por isso existe o cadastro de fornecedor próprio (etapa 3) e a categoria geral de reserva.
 
 ## Publicação
 
