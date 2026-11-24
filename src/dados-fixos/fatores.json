@@ -1,0 +1,12 @@
+{
+  "_sobre": "Fatores gerais do cálculo (SPEC, seção 7). Todo valor entra com verificado=false; só um integrante do grupo muda para true depois de conferir a fonte. Os demais fatores entram na etapa 5.",
+  "tortuosidade": {
+    "valor": 1.23,
+    "unidade": "km por estrada / km em linha reta",
+    "fonte": "Ballou, R. H.; Rahardja, H.; Sakai, N. Selected country circuity factors for road travel distance estimation. Transportation Research Part A, v. 36, n. 9, p. 843–848, 2002. Valor para o Brasil.",
+    "url": "https://doi.org/10.1016/S0965-8564(01)00044-1",
+    "ano": 2002,
+    "verificado": false,
+    "nota": "Valor tirado de material de curso do MIT que cita o artigo (Brasil: 1,23, desvio-padrão 0,11). Um artigo da MDPI (Logistics, 2025, v. 9, n. 3, art. 124) cita o mesmo trabalho com 1,33 para o Brasil. Conferir na tabela original antes de marcar como verificado."
+  }
+}

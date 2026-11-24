@@ -1,7 +1,8 @@
 import type { Position } from 'geojson'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { INSTRUCAO_INICIAL, NOME_APP } from './compartilhado/app'
-import type { IdCategoria } from './compartilhado/terreno'
+import { CATEGORIA_POR_ID } from './compartilhado/categorias'
+import type { IdCategoria, Rota } from './compartilhado/terreno'
 import {
   type BaseFornecedores,
   carregarBase,
@@ -21,7 +22,8 @@ import {
   type Preferencias,
   salvarPreferencias,
 } from './dados/preferencias'
-import { type ControleMapa, Mapa } from './geometria/Mapa'
+import { useRotas } from './dados/useRotas'
+import { type ControleMapa, Mapa, type RotaNoMapa } from './geometria/Mapa'
 import { PainelTerreno } from './geometria/PainelTerreno'
 import type { Lote } from './geometria/lote'
 
@@ -81,6 +83,27 @@ function App() {
     [base, lote, raioKm, preferencias],
   )
 
+  const { rotas, estado: estadoRotas, tentarDeNovo: tentarRotasDeNovo } = useRotas(lote?.centro ?? null, pontos)
+
+  const rotasNoMapa = useMemo(
+    () =>
+      (Object.entries(rotas) as [IdCategoria, Rota][]).flatMap(([categoria, r]) => {
+        const ponto = pontos.find((p) => p.id === r.pontoId)
+        if (!r.geometria || !ponto) return []
+        return [
+          {
+            categoria: CATEGORIA_POR_ID[categoria].nome,
+            cor: CATEGORIA_POR_ID[categoria].cor,
+            nomePonto: ponto.nome ?? 'Sem nome',
+            distanciaKm: r.distanciaKm,
+            estimada: r.estimada,
+            geometria: r.geometria,
+          } satisfies RotaNoMapa,
+        ]
+      }),
+    [rotas, pontos],
+  )
+
   function editarProprio(id: string, nome: string, categoria: IdCategoria) {
     mudarPreferencias((p) => ({
       ...p,
@@ -121,6 +144,7 @@ function App() {
       <Mapa
         ref={mapa}
         pontos={pontos}
+        rotas={rotasNoMapa}
         escolhendoLocal={adicao?.etapa === 'local'}
         aoEscolherLocal={(c) => {
           setLocalNovo(c)
@@ -158,6 +182,9 @@ function App() {
             setTentativa((t) => t + 1)
           }}
           pontos={pontos}
+          rotas={rotas}
+          estadoRotas={estadoRotas}
+          aoTentarRotasDeNovo={tentarRotasDeNovo}
           aoAlternar={(id) => mudarPreferencias((p) => alternarDesligado(p, id))}
           aoEditar={editarProprio}
           aoRemover={removerProprio}
