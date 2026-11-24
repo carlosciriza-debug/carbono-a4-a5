@@ -1,5 +1,6 @@
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { Map as MapaMapLibre, NavigationControl, ScaleControl } from 'maplibre-gl'
+import { Map as MapaMapLibre, NavigationControl, ScaleControl, setWorkerUrl } from 'maplibre-gl'
+import urlWorkerMapLibre from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url'
 import { type Ref, useEffect, useImperativeHandle, useLayoutEffect, useRef } from 'react'
 import { TerraDraw, TerraDrawPolygonMode, TerraDrawSelectMode, type GeoJSONStoreFeatures } from 'terra-draw'
 import { TerraDrawMapLibreGLAdapter } from 'terra-draw-maplibre-gl-adapter'
@@ -12,6 +13,10 @@ const ESTILO_MAPA = 'https://tiles.openfreemap.org/styles/positron'
 const CENTRO_BRASIL: [number, number] = [-51.9, -14.2]
 
 const PRETO = '#000000'
+
+// O MapLibre monta o endereço do worker em tempo de execução, e o Vite não o inclui no build.
+// Importar com ?url faz o Vite copiar o arquivo e devolver o endereço final.
+setWorkerUrl(urlWorkerMapLibre)
 
 export type ControleMapa = {
   irPara: (resultado: ResultadoBusca) => void

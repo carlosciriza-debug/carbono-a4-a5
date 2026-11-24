@@ -5,10 +5,6 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   base: '/carbono-a4-a5/',
   plugins: [react()],
-  // O MapLibre localiza o próprio worker via import.meta.url; o pré-empacotamento do Vite quebra esse caminho.
-  optimizeDeps: {
-    exclude: ['maplibre-gl'],
-  },
   test: {
     environment: 'node',
   },
