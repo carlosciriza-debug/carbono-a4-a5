@@ -26,3 +26,6 @@ dist-ssr
 # Segredos (nenhuma chave é usada nesta versão)
 .env
 .env.*
+
+# Configuração local do Claude Code
+.claude/

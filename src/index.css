@@ -1,12 +1,18 @@
 :root {
   --texto: #111;
   --texto-secundario: #666;
+  --linha: #ddd;
   --fundo: #fff;
+  --erro: #b00020;
 
-  font: 16px/1.5 system-ui, 'Segoe UI', Roboto, sans-serif;
+  font: 14px/1.5 system-ui, 'Segoe UI', Roboto, sans-serif;
   color: var(--texto);
   background: var(--fundo);
   -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
@@ -14,16 +20,150 @@ body {
   background: var(--fundo);
 }
 
-.pagina {
-  padding: 32px;
+.aplicacao {
+  display: flex;
+  height: 100vh;
+}
+
+.mapa {
+  flex: 1;
+  min-width: 0;
+}
+
+.painel {
+  width: 380px;
+  flex-shrink: 0;
+  overflow-y: auto;
+  border-left: 1px solid var(--linha);
+  padding: 20px;
 }
 
 h1 {
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 600;
-  margin: 0 0 8px;
+  margin: 0 0 4px;
 }
 
-.nota {
+h2 {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 12px;
+}
+
+.instrucao {
+  margin: 0;
   color: var(--texto-secundario);
+}
+
+.secao {
+  border-top: 1px solid var(--linha);
+  margin-top: 20px;
+  padding-top: 16px;
+}
+
+.linha {
+  display: flex;
+  gap: 8px;
+}
+
+label {
+  display: block;
+  font-size: 12px;
+  color: var(--texto-secundario);
+  margin-bottom: 4px;
+}
+
+input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  padding: 6px 8px;
+  border: 1px solid #999;
+  border-radius: 2px;
+}
+
+button {
+  font: inherit;
+  padding: 6px 12px;
+  border: 1px solid var(--texto);
+  border-radius: 2px;
+  background: var(--fundo);
+  color: var(--texto);
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  background: var(--texto);
+  color: var(--fundo);
+}
+
+button:disabled {
+  border-color: var(--linha);
+  color: #aaa;
+  cursor: default;
+}
+
+.acoes {
+  margin-top: 16px;
+}
+
+.resultados {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.resultado {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  border-bottom: 1px solid var(--linha);
+  font-size: 12px;
+  color: var(--texto-secundario);
+  padding: 6px 4px;
+}
+
+.resultado.ativo {
+  color: var(--texto);
+  font-weight: 600;
+}
+
+.medidas {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 16px;
+  margin: 16px 0 0;
+}
+
+.medidas dt {
+  color: var(--texto-secundario);
+}
+
+.medidas dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.dica,
+.pendente,
+.fonte {
+  color: var(--texto-secundario);
+  font-size: 12px;
+}
+
+.pendente {
+  font-style: italic;
+}
+
+.fonte {
+  margin: 16px 0 0;
+}
+
+.erro {
+  color: var(--erro);
+  font-size: 13px;
 }
