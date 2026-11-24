@@ -1,0 +1,68 @@
+{
+  "_sobre": "Sistemas construtivos (SPEC, seção 7): massa de cada material por m² de área construída, perda em obra e referência de A1–A3. valor=null enquanto não houver fonte verificada; o cálculo correspondente aparece como pendente. Lista de materiais a confirmar com a fonte das massas.",
+  "sistemas": [
+    {
+      "id": "concreto",
+      "nome": "Concreto armado",
+      "materiais": [
+        {
+          "id": "concreto",
+          "nome": "Concreto",
+          "categoria": "concreto",
+          "intensidade": { "valor": null, "unidade": "kg/m²", "fonte": "Pendente: Belizário-Silva et al. (2024), J. Building Engineering 82, 108234 (texto completo ainda não lido).", "url": "https://doi.org/10.1016/j.jobe.2023.108234", "ano": 2024, "verificado": false },
+          "perda": { "valor": 0.05, "unidade": "fração", "fonte": "RICS. Whole life carbon assessment for the built environment, 2nd ed., 2023. Tabela 18, p. 83–84: concreto moldado in loco, 5%.", "url": "https://www.rics.org/content/dam/ricsglobal/documents/standards/Whole_life_carbon_assessment_PS_Sept23.pdf", "ano": 2023, "verificado": false, "nota": "Taxa britânica de resíduo. O estudo FINEP/ITQC (Souza et al., dados de 1998) mede perda total de concreto no Brasil, com mediana de 9%; outro conceito." }
+        },
+        {
+          "id": "aco-armadura",
+          "nome": "Aço (armadura)",
+          "categoria": "aco",
+          "intensidade": { "valor": null, "unidade": "kg/m²", "fonte": "Pendente: Belizário-Silva et al. (2024).", "url": "https://doi.org/10.1016/j.jobe.2023.108234", "ano": 2024, "verificado": false },
+          "perda": { "valor": 0.05, "unidade": "fração", "fonte": "RICS 2023, Tabela 18: armadura, 5%.", "url": "https://www.rics.org/content/dam/ricsglobal/documents/standards/Whole_life_carbon_assessment_PS_Sept23.pdf", "ano": 2023, "verificado": false, "nota": "FINEP/ITQC: perda total de aço no Brasil, mediana de 11%." }
+        }
+      ],
+      "referenciaA1A3": { "valor": null, "unidade": "kgCO2e/m²", "fonte": "Pendente: Belizário-Silva et al. (2024) dão 35 a 140 kgCO2/m² para estruturas de concreto no Brasil (só faixa, lida no resumo).", "url": "https://doi.org/10.1016/j.jobe.2023.108234", "ano": 2024, "verificado": false }
+    },
+    {
+      "id": "aco",
+      "nome": "Aço",
+      "materiais": [
+        {
+          "id": "aco-estrutural",
+          "nome": "Aço estrutural",
+          "categoria": "aco",
+          "intensidade": { "valor": null, "unidade": "kg/m²", "fonte": "Pendente: Hart, D'Amico e Pomponi (2021), J. Industrial Ecology 25(2):403–418 (texto completo ainda não lido).", "url": "https://doi.org/10.1111/jiec.13139", "ano": 2021, "verificado": false },
+          "perda": { "valor": 0.01, "unidade": "fração", "fonte": "RICS 2023, Tabela 18: estrutura de aço, 1%.", "url": "https://www.rics.org/content/dam/ricsglobal/documents/standards/Whole_life_carbon_assessment_PS_Sept23.pdf", "ano": 2023, "verificado": false }
+        },
+        {
+          "id": "concreto-lajes",
+          "nome": "Concreto (lajes e fundação)",
+          "categoria": "concreto",
+          "intensidade": { "valor": null, "unidade": "kg/m²", "fonte": "Pendente: Hart, D'Amico e Pomponi (2021).", "url": "https://doi.org/10.1111/jiec.13139", "ano": 2021, "verificado": false },
+          "perda": { "valor": 0.05, "unidade": "fração", "fonte": "RICS 2023, Tabela 18: concreto moldado in loco, 5%.", "url": "https://www.rics.org/content/dam/ricsglobal/documents/standards/Whole_life_carbon_assessment_PS_Sept23.pdf", "ano": 2023, "verificado": false }
+        }
+      ],
+      "referenciaA1A3": { "valor": null, "unidade": "kgCO2e/m²", "fonte": "Pendente: Hart, D'Amico e Pomponi (2021) — no resumo só há o ciclo de vida inteiro (mediana 228), não A1–A3.", "url": "https://doi.org/10.1111/jiec.13139", "ano": 2021, "verificado": false }
+    },
+    {
+      "id": "madeira",
+      "nome": "Madeira",
+      "materiais": [
+        {
+          "id": "madeira-estrutural",
+          "nome": "Madeira estrutural",
+          "categoria": "madeira",
+          "intensidade": { "valor": null, "unidade": "kg/m²", "fonte": "Pendente: Hart, D'Amico e Pomponi (2021).", "url": "https://doi.org/10.1111/jiec.13139", "ano": 2021, "verificado": false },
+          "perda": { "valor": 0.02, "unidade": "fração", "fonte": "RICS 2023, Tabela 18: estruturas de madeira, 2%.", "url": "https://www.rics.org/content/dam/ricsglobal/documents/standards/Whole_life_carbon_assessment_PS_Sept23.pdf", "ano": 2023, "verificado": false, "nota": "A RICS não tem linha para CLT ou MLC; esta é a mais próxima." }
+        },
+        {
+          "id": "concreto-fundacao",
+          "nome": "Concreto (fundação)",
+          "categoria": "concreto",
+          "intensidade": { "valor": null, "unidade": "kg/m²", "fonte": "Pendente: Hart, D'Amico e Pomponi (2021).", "url": "https://doi.org/10.1111/jiec.13139", "ano": 2021, "verificado": false },
+          "perda": { "valor": 0.05, "unidade": "fração", "fonte": "RICS 2023, Tabela 18: concreto moldado in loco, 5%.", "url": "https://www.rics.org/content/dam/ricsglobal/documents/standards/Whole_life_carbon_assessment_PS_Sept23.pdf", "ano": 2023, "verificado": false }
+        }
+      ],
+      "referenciaA1A3": { "valor": null, "unidade": "kgCO2e/m²", "fonte": "Pendente: Hart, D'Amico e Pomponi (2021) — no resumo só há o ciclo de vida inteiro (mediana 119), não A1–A3.", "url": "https://doi.org/10.1111/jiec.13139", "ano": 2021, "verificado": false }
+    }
+  ]
+}

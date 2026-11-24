@@ -34,18 +34,25 @@ export type Rota = {
 }
 
 export type DetalheMaterial = {
+  modulo: 'A4' | 'A5 resíduos' | 'A5 terra'
   material: string
-  massaT: number
+  massaT: number | null
   pontoId: string | null
   distanciaKm: number | null
-  kgCO2e: number | null
+  estimada: boolean
+  substituicao: boolean // usou a categoria geral no lugar da específica
+  kgCO2e: number | null // null: pendente
 }
 
 export type ResultadoSistema = {
-  a4KgCO2e: number | null
+  a4KgCO2e: number | null // soma das parcelas calculadas; null se nenhuma pôde ser calculada
   a5KgCO2e: number | null
+  a5ResiduosKgCO2e: number | null
+  a5TerraKgCO2e: number | null
+  referenciaA1A3KgCO2e: number | null
   detalhamento: DetalheMaterial[]
-  pendencias: string[]
+  pendencias: string[] // o que não entrou na soma, e por quê
+  avisos: string[] // o que entrou, mas com ressalva (estimado, substituição)
 }
 
 export type Terreno = {

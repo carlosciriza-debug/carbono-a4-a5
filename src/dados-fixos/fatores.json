@@ -1,5 +1,23 @@
 {
-  "_sobre": "Fatores gerais do cálculo (SPEC, seção 7). Todo valor entra com verificado=false; só um integrante do grupo muda para true depois de conferir a fonte. Os demais fatores entram na etapa 5.",
+  "_sobre": "Fatores gerais do cálculo (SPEC, seção 7). Todo valor entra com verificado=false; só um integrante do grupo muda para true depois de conferir a fonte. valor=null quando não há fonte: o cálculo correspondente fica pendente.",
+  "caminhao": {
+    "valor": 0.0592,
+    "unidade": "kgCO2 por t·km",
+    "fonte": "Villen et al. Descarbonização no transporte de cargas. In: BNDES. Descarbonização dos transportes: perspectivas diante da transição energética. Tabela 1, p. 135. Modo rodoviário, granel mineral (média da faixa EPL & Iema, 2021).",
+    "url": "https://web.bndes.gov.br/bib/jspui/bitstream/1408/27428/1/PRCapLiv_216305_Descarboniza%c3%a7%c3%a3o%20no%20transporte%20de%20cargas.pdf",
+    "ano": 2024,
+    "verificado": false,
+    "nota": "Frota brasileira, diesel B10 (2,37 kgCO2/l). Só CO2, sem CH4 e N2O. Por tonelada útil transportada (TKU), só ida. A tabela imprime 'g', mas a unidade coerente é kg por 1.000 TKU (59,2 kg/1000 TKU = 0,0592 kg/TKU). Não foi possível abrir o original da EPL & Iema. Não foi possível confirmar se a média da frota já inclui viagens vazias; se incluir, o ×2 do retorno vazio conta essa parte duas vezes."
+  },
+  "retornoVazio": {
+    "valor": 2,
+    "unidade": "multiplicador da distância",
+    "fonte": "Belizário-Silva, F. et al. Sidac: Metodologia de cálculo dos indicadores de desempenho ambiental, v1.0. CBCS, 2022. Seção 3.4.3, p. 22: 'multiplicar a distância por 2' quando o veículo volta vazio.",
+    "url": "https://sidac.org.br/documentos/Sidac_Metodologia_v1.0.pdf",
+    "ano": 2022,
+    "verificado": false,
+    "nota": "Supõe que todo caminhão volta vazio, o que é conservador. A RICS (2023) usa 43% de retorno vazio, ou 100% para betoneiras."
+  },
   "tortuosidade": {
     "valor": 1.23,
     "unidade": "km por estrada / km em linha reta",
@@ -7,6 +25,33 @@
     "url": "https://doi.org/10.1016/S0965-8564(01)00044-1",
     "ano": 2002,
     "verificado": false,
-    "nota": "Valor tirado de material de curso do MIT que cita o artigo (Brasil: 1,23, desvio-padrão 0,11). Um artigo da MDPI (Logistics, 2025, v. 9, n. 3, art. 124) cita o mesmo trabalho com 1,33 para o Brasil. Conferir na tabela original antes de marcar como verificado."
+    "nota": "Lido na reprodução da tabela em material do MIT (CTL.SC1x, p. 11): Brasil 1,23 (desvio-padrão 0,11); a China aparece com 1,33, o que explica a citação secundária de 1,33 para o Brasil. O artigo original não pôde ser aberto. Feito para viagens entre cidades; em centros urbanos subestima a distância."
+  },
+  "escavacao": {
+    "valor": 3.5,
+    "unidade": "kgCO2e por m³",
+    "fonte": "IStructE. How to calculate embodied carbon, 2nd ed., 2022. Appendix C, Table C3, p. 53: 0,1 h/m³ × 12,9 l/h de diesel × 2,71 kgCO2e/l.",
+    "url": "https://www.egbc.ca/getmedia/a7603519-43cc-4795-8558-6960b2b7b5d1/HTCEC-2nd-edition.pdf",
+    "ano": 2022,
+    "verificado": false,
+    "nota": "Exemplo britânico: escavação de areia e pedregulho firmes, 2 a 5 m de profundidade. Não há fator brasileiro por m³ no Sidac."
+  },
+  "densidadeSolo": {
+    "valor": 1.84,
+    "unidade": "t/m³",
+    "fonte": "ABNT NBR 6120:2019. Ações para o cálculo de estruturas de edificações. Seção 5.4, Tabela 7 (Enchimentos): solo, 16 a 20 kN/m³, valor médio 18 kN/m³.",
+    "url": "https://www.abntcatalogo.com.br/",
+    "ano": 2019,
+    "verificado": false,
+    "nota": "18 kN/m³ ÷ 9,81 m/s² = 1,84 t/m³. Lido numa cópia não oficial da norma; conferir no original da ABNT."
+  },
+  "alturaPorPavimento": {
+    "valor": 3,
+    "unidade": "m por pavimento",
+    "fonte": "OpenStreetMap Wiki. Key:building:levels: altura de pavimento padrão usada em renderizações 3D quando não há altura.",
+    "url": "https://wiki.openstreetmap.org/wiki/Key:building:levels",
+    "ano": 2026,
+    "verificado": false,
+    "nota": "Só para o contexto 3D dos vizinhos (etapa 7); não entra em cálculo."
   }
 }
