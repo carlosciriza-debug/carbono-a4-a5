@@ -80,3 +80,24 @@ export function agruparPorCategoria<T extends Ponto>(pontos: T[]): Record<IdCate
 export function mensagemSemPontos(nomeCategoria: string, raioKm: number): string {
   return `Nenhum fornecedor de ${nomeCategoria.toLowerCase()} encontrado em ${raioKm} km. Aumente o raio ou adicione um no mapa.`
 }
+
+/**
+ * Junta os pontos da base dentro do raio com as escolhas do usuário:
+ * marca os desligados e inclui os fornecedores próprios. Os próprios entram
+ * sempre, mesmo fora do raio, porque foram cadastrados de propósito.
+ */
+export function combinarPontos(
+  noRaio: PontoComDistancia[],
+  proprios: Ponto[],
+  desligados: string[],
+  centro: Position,
+): PontoComDistancia[] {
+  const fora = new Set(desligados)
+  const todos = [
+    ...noRaio,
+    ...proprios.map((p) => ({ ...p, distanciaRetaKm: distanciaRetaKm(centro, p.coordenadas) })),
+  ]
+  return todos
+    .map((p) => ({ ...p, ativo: !fora.has(p.id) }))
+    .sort((a, b) => a.distanciaRetaKm - b.distanciaRetaKm)
+}

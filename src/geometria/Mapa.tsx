@@ -1,10 +1,17 @@
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { type GeoJSONSource, Map as MapaMapLibre, NavigationControl, ScaleControl, setWorkerUrl } from 'maplibre-gl'
+import {
+  type GeoJSONSource,
+  Map as MapaMapLibre,
+  NavigationControl,
+  Popup,
+  ScaleControl,
+  setWorkerUrl,
+} from 'maplibre-gl'
 import urlWorkerMapLibre from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url'
 import { type Ref, useEffect, useImperativeHandle, useLayoutEffect, useRef } from 'react'
 import { TerraDraw, TerraDrawPolygonMode, TerraDrawSelectMode, type GeoJSONStoreFeatures } from 'terra-draw'
 import { TerraDrawMapLibreGLAdapter } from 'terra-draw-maplibre-gl-adapter'
-import type { Feature, FeatureCollection, Point, Polygon } from 'geojson'
+import type { Feature, FeatureCollection, Point, Polygon, Position } from 'geojson'
 import { CATEGORIA_POR_ID } from '../compartilhado/categorias'
 import type { Ponto } from '../compartilhado/terreno'
 import { calcularLote, type Lote } from './lote'
@@ -29,6 +36,10 @@ export type ControleMapa = {
 type Props = {
   ref?: Ref<ControleMapa>
   pontos: Ponto[]
+  /** Quando verdadeiro, o próximo clique no mapa escolhe o local de um fornecedor próprio. */
+  escolhendoLocal: boolean
+  aoEscolherLocal: (coordenadas: Position) => void
+  aoAlternarPonto: (id: string) => void
   aoMudarLote: (lote: Lote | null) => void
   aoMudarDesenho: (desenhando: boolean) => void
 }
@@ -44,23 +55,47 @@ function colecaoDePontos(pontos: Ponto[]): FeatureCollection<Point> {
         nome: p.nome ?? 'Sem nome',
         cor: CATEGORIA_POR_ID[p.categoria].cor,
         letra: CATEGORIA_POR_ID[p.categoria].letra,
+        categoria: CATEGORIA_POR_ID[p.categoria].nome,
         ativo: p.ativo,
+        proprio: p.origem === 'usuario',
       },
     })),
   }
 }
 
-export function Mapa({ ref, pontos, aoMudarLote, aoMudarDesenho }: Props) {
+function conteudoPopup(propriedades: Record<string, unknown>, aoAlternar: () => void): HTMLElement {
+  const caixa = document.createElement('div')
+  caixa.className = 'popup-ponto'
+  const nome = document.createElement('strong')
+  nome.textContent = String(propriedades.nome)
+  const detalhe = document.createElement('p')
+  detalhe.textContent = `${propriedades.categoria}${propriedades.proprio ? ' · fornecedor próprio' : ' · OpenStreetMap'}`
+  const botao = document.createElement('button')
+  botao.type = 'button'
+  botao.textContent = propriedades.ativo ? 'Desligar' : 'Ligar'
+  botao.addEventListener('click', aoAlternar)
+  caixa.append(nome, detalhe, botao)
+  return caixa
+}
+
+export function Mapa({ ref, pontos, escolhendoLocal, aoEscolherLocal, aoAlternarPonto, aoMudarLote, aoMudarDesenho }: Props) {
   const container = useRef<HTMLDivElement>(null)
   const mapa = useRef<MapaMapLibre | null>(null)
   const desenho = useRef<TerraDraw | null>(null)
   const loteId = useRef<string | number | null>(null)
 
   // Guarda os callbacks atuais sem recriar o mapa.
-  const callbacks = useRef({ aoMudarLote, aoMudarDesenho })
+  const callbacks = useRef({ aoMudarLote, aoMudarDesenho, aoEscolherLocal, aoAlternarPonto })
+  const escolhendo = useRef(escolhendoLocal)
   useLayoutEffect(() => {
-    callbacks.current = { aoMudarLote, aoMudarDesenho }
+    callbacks.current = { aoMudarLote, aoMudarDesenho, aoEscolherLocal, aoAlternarPonto }
+    escolhendo.current = escolhendoLocal
   })
+
+  useEffect(() => {
+    const tela = mapa.current?.getCanvas()
+    if (tela) tela.style.cursor = escolhendoLocal ? 'crosshair' : ''
+  }, [escolhendoLocal])
 
   const pontosAtuais = useRef(pontos)
   useEffect(() => {
@@ -88,11 +123,13 @@ export function Mapa({ ref, pontos, aoMudarLote, aoMudarDesenho }: Props) {
         type: 'circle',
         source: 'pontos',
         paint: {
-          'circle-radius': 8,
+          'circle-radius': ['case', ['get', 'proprio'], 9, 8],
           'circle-color': ['get', 'cor'],
           'circle-opacity': ['case', ['get', 'ativo'], 1, 0.3],
-          'circle-stroke-color': '#ffffff',
-          'circle-stroke-width': 1.5,
+          // Fornecedor próprio ganha contorno preto para se distinguir dos pontos do OpenStreetMap.
+          'circle-stroke-color': ['case', ['get', 'proprio'], PRETO, '#ffffff'],
+          'circle-stroke-width': ['case', ['get', 'proprio'], 2.5, 1.5],
+          'circle-stroke-opacity': ['case', ['get', 'ativo'], 1, 0.4],
         },
       })
       m.addLayer({
@@ -106,7 +143,34 @@ export function Mapa({ ref, pontos, aoMudarLote, aoMudarDesenho }: Props) {
           'text-allow-overlap': true,
           'text-ignore-placement': true,
         },
-        paint: { 'text-color': '#ffffff' },
+        paint: { 'text-color': '#ffffff', 'text-opacity': ['case', ['get', 'ativo'], 1, 0.6] },
+      })
+
+      const popup = new Popup({ closeButton: true, closeOnClick: true, offset: 12 })
+
+      m.on('click', (e) => {
+        if (escolhendo.current) {
+          callbacks.current.aoEscolherLocal([e.lngLat.lng, e.lngLat.lat])
+          return
+        }
+        const [ponto] = m.queryRenderedFeatures(e.point, { layers: ['pontos-circulo'] })
+        if (!ponto) return
+        const propriedades = ponto.properties
+        popup
+          .setLngLat((ponto.geometry as Point).coordinates as [number, number])
+          .setDOMContent(
+            conteudoPopup(propriedades, () => {
+              callbacks.current.aoAlternarPonto(String(propriedades.id))
+              popup.remove()
+            }),
+          )
+          .addTo(m)
+      })
+      m.on('mouseenter', 'pontos-circulo', () => {
+        if (!escolhendo.current) m.getCanvas().style.cursor = 'pointer'
+      })
+      m.on('mouseleave', 'pontos-circulo', () => {
+        if (!escolhendo.current) m.getCanvas().style.cursor = ''
       })
 
       const td = new TerraDraw({

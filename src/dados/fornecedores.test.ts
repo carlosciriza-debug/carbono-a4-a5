@@ -3,6 +3,7 @@ import {
   agruparPorCategoria,
   type BaseFornecedores,
   carregarBase,
+  combinarPontos,
   distanciaRetaKm,
   mensagemSemPontos,
   pontosNoRaio,
@@ -72,5 +73,33 @@ describe('carregarBase', () => {
     await expect(carregarBase(falha)).rejects.toThrow('503')
     const sucesso = vi.fn(async () => new Response(JSON.stringify(base))) as unknown as typeof fetch
     await expect(carregarBase(sucesso)).resolves.toMatchObject({ extraidoEm: '2026-11-24' })
+  })
+})
+
+describe('combinarPontos', () => {
+  const proprio = {
+    id: 'usuario/1',
+    nome: 'Concreteira do grupo',
+    categoria: 'concreto' as const,
+    coordenadas: [-43.1807, -22.3955], // ≈ 55 km, fora do raio de 25 km
+    origem: 'usuario' as const,
+    ativo: true,
+  }
+
+  it('desliga os pontos escolhidos pelo usuário', () => {
+    const r = combinarPontos(pontosNoRaio(base, centroRio, 60), [], ['node/1'], centroRio)
+    expect(r.find((p) => p.id === 'node/1')!.ativo).toBe(false)
+    expect(r.find((p) => p.id === 'node/2')!.ativo).toBe(true)
+  })
+
+  it('inclui o fornecedor próprio mesmo fora do raio, na ordem de distância', () => {
+    const r = combinarPontos(pontosNoRaio(base, centroRio, 25), [proprio], [], centroRio)
+    expect(r.map((p) => p.id)).toEqual(['node/1', 'usuario/1'])
+    expect(r[1].distanciaRetaKm).toBeCloseTo(55.6, 0)
+  })
+
+  it('o fornecedor próprio também pode ser desligado', () => {
+    const r = combinarPontos([], [proprio], ['usuario/1'], centroRio)
+    expect(r[0].ativo).toBe(false)
   })
 })
