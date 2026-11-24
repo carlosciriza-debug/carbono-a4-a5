@@ -1,0 +1,29 @@
+:root {
+  --texto: #111;
+  --texto-secundario: #666;
+  --fundo: #fff;
+
+  font: 16px/1.5 system-ui, 'Segoe UI', Roboto, sans-serif;
+  color: var(--texto);
+  background: var(--fundo);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  background: var(--fundo);
+}
+
+.pagina {
+  padding: 32px;
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.nota {
+  color: var(--texto-secundario);
+}
