@@ -339,3 +339,22 @@ button.link:hover:not(:disabled) {
   padding: 3px 10px;
   font-size: 12px;
 }
+
+.rota {
+  margin: 0 0 4px;
+  padding-left: 24px;
+  font-size: 12px;
+}
+
+.rota.estimada {
+  color: #8a5a00;
+}
+
+.selo.escolhido {
+  background: var(--texto);
+  color: var(--fundo);
+}
+
+.fonte a {
+  color: inherit;
+}

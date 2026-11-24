@@ -11,7 +11,7 @@ import urlWorkerMapLibre from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url'
 import { type Ref, useEffect, useImperativeHandle, useLayoutEffect, useRef } from 'react'
 import { TerraDraw, TerraDrawPolygonMode, TerraDrawSelectMode, type GeoJSONStoreFeatures } from 'terra-draw'
 import { TerraDrawMapLibreGLAdapter } from 'terra-draw-maplibre-gl-adapter'
-import type { Feature, FeatureCollection, Point, Polygon, Position } from 'geojson'
+import type { Feature, FeatureCollection, LineString, Point, Polygon, Position } from 'geojson'
 import { CATEGORIA_POR_ID } from '../compartilhado/categorias'
 import type { Ponto } from '../compartilhado/terreno'
 import { calcularLote, type Lote } from './lote'
@@ -33,9 +33,20 @@ export type ControleMapa = {
   apagarLote: () => void
 }
 
+/** Rota pronta para desenhar, com o que aparece ao passar o cursor. */
+export type RotaNoMapa = {
+  categoria: string
+  cor: string
+  nomePonto: string
+  distanciaKm: number
+  estimada: boolean
+  geometria: Feature<LineString>
+}
+
 type Props = {
   ref?: Ref<ControleMapa>
   pontos: Ponto[]
+  rotas: RotaNoMapa[]
   /** Quando verdadeiro, o próximo clique no mapa escolhe o local de um fornecedor próprio. */
   escolhendoLocal: boolean
   aoEscolherLocal: (coordenadas: Position) => void
@@ -63,6 +74,40 @@ function colecaoDePontos(pontos: Ponto[]): FeatureCollection<Point> {
   }
 }
 
+function colecaoDeRotas(rotas: RotaNoMapa[]): FeatureCollection<LineString> {
+  return {
+    type: 'FeatureCollection',
+    features: rotas.map((r) => ({
+      ...r.geometria,
+      properties: {
+        categoria: r.categoria,
+        cor: r.cor,
+        nomePonto: r.nomePonto,
+        distanciaKm: r.distanciaKm,
+        estimada: r.estimada,
+      },
+    })),
+  }
+}
+
+function textoRota(p: Record<string, unknown>): HTMLElement {
+  const caixa = document.createElement('div')
+  caixa.className = 'popup-ponto'
+  const titulo = document.createElement('strong')
+  titulo.textContent = String(p.categoria)
+  const linhas = [
+    String(p.nomePonto),
+    `${Number(p.distanciaKm).toLocaleString('pt-BR', { maximumFractionDigits: 1 })} km${p.estimada ? ' (estimado)' : ' por estrada'}`,
+    'Peso no carbono: calculado na etapa 5',
+  ].map((t) => {
+    const linha = document.createElement('p')
+    linha.textContent = t
+    return linha
+  })
+  caixa.append(titulo, ...linhas)
+  return caixa
+}
+
 function conteudoPopup(propriedades: Record<string, unknown>, aoAlternar: () => void): HTMLElement {
   const caixa = document.createElement('div')
   caixa.className = 'popup-ponto'
@@ -78,7 +123,7 @@ function conteudoPopup(propriedades: Record<string, unknown>, aoAlternar: () => 
   return caixa
 }
 
-export function Mapa({ ref, pontos, escolhendoLocal, aoEscolherLocal, aoAlternarPonto, aoMudarLote, aoMudarDesenho }: Props) {
+export function Mapa({ ref, pontos, rotas, escolhendoLocal, aoEscolherLocal, aoAlternarPonto, aoMudarLote, aoMudarDesenho }: Props) {
   const container = useRef<HTMLDivElement>(null)
   const mapa = useRef<MapaMapLibre | null>(null)
   const desenho = useRef<TerraDraw | null>(null)
@@ -96,6 +141,13 @@ export function Mapa({ ref, pontos, escolhendoLocal, aoEscolherLocal, aoAlternar
     const tela = mapa.current?.getCanvas()
     if (tela) tela.style.cursor = escolhendoLocal ? 'crosshair' : ''
   }, [escolhendoLocal])
+
+  const rotasAtuais = useRef(rotas)
+  useEffect(() => {
+    rotasAtuais.current = rotas
+    const fonte = mapa.current?.getSource('rotas') as GeoJSONSource | undefined
+    fonte?.setData(colecaoDeRotas(rotas))
+  }, [rotas])
 
   const pontosAtuais = useRef(pontos)
   useEffect(() => {
@@ -116,6 +168,40 @@ export function Mapa({ ref, pontos, escolhendoLocal, aoEscolherLocal, aoAlternar
     mapa.current = m
 
     m.on('load', () => {
+      // Rotas abaixo dos pontos; linha tracejada quando a distância é estimada.
+      m.addSource('rotas', { type: 'geojson', data: colecaoDeRotas(rotasAtuais.current) })
+      for (const [id, estimada] of [
+        ['rotas-estrada', false],
+        ['rotas-estimadas', true],
+      ] as const) {
+        m.addLayer({
+          id,
+          type: 'line',
+          source: 'rotas',
+          filter: ['==', ['get', 'estimada'], estimada],
+          layout: { 'line-cap': 'round', 'line-join': 'round' },
+          paint: {
+            'line-color': ['get', 'cor'],
+            'line-width': 4,
+            'line-opacity': 0.85,
+            ...(estimada ? { 'line-dasharray': [1, 2] } : {}),
+          },
+        })
+      }
+      const dicaRota = new Popup({ closeButton: false, closeOnClick: false, offset: 8 })
+      for (const camada of ['rotas-estrada', 'rotas-estimadas']) {
+        m.on('mousemove', camada, (e) => {
+          const [rota] = e.features ?? []
+          if (!rota) return
+          m.getCanvas().style.cursor = escolhendo.current ? 'crosshair' : 'pointer'
+          dicaRota.setLngLat(e.lngLat).setDOMContent(textoRota(rota.properties)).addTo(m)
+        })
+        m.on('mouseleave', camada, () => {
+          m.getCanvas().style.cursor = escolhendo.current ? 'crosshair' : ''
+          dicaRota.remove()
+        })
+      }
+
       // Pontos de fornecedores, abaixo do lote (as camadas do Terra Draw entram depois).
       m.addSource('pontos', { type: 'geojson', data: colecaoDePontos(pontosAtuais.current) })
       m.addLayer({

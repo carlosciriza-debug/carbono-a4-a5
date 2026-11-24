@@ -4,7 +4,7 @@ Mapa interativo para escolher um terreno em qualquer lugar do Brasil e ver o car
 
 A ferramenta encontra fornecedores e destinos de resíduos perto do terreno com dados abertos do OpenStreetMap e calcula as distâncias reais por estrada. Ela complementa as calculadoras de ciclo de vida e não as substitui.
 
-> Em construção. Etapa atual: 3 (ligar e desligar pontos, fornecedor próprio, exportar e importar).
+> Em construção. Etapa atual: 4 (rotas e distâncias por estrada).
 
 **Endereço público:** https://obrunoheringer1.github.io/carbono-a4-a5/
 
@@ -39,12 +39,15 @@ src/
 5. Em **Fornecedores**, escolha o raio (25, 50, 100 ou 200 km). Os pontos aparecem no mapa, com cor e letra por categoria, e na lista, do mais perto ao mais longe (em linha reta).
 6. Desmarque um ponto na lista, ou clique nele no mapa e escolha **Desligar**, para tirá-lo do cálculo.
 7. Para cadastrar um fornecedor que não está no mapa, clique em **Adicionar fornecedor no mapa**, clique no local e informe nome e categoria. No mapa, ele aparece com contorno preto. Fornecedores próprios entram sempre, mesmo fora do raio, e podem ser editados e removidos na lista.
-8. Fornecedores próprios e pontos desligados ficam salvos no navegador. Use **Exportar** para guardar um arquivo JSON ou passar para outra pessoa, e **Importar** para trazê-lo de volta. A importação junta o arquivo com o que já existe.
+8. Para cada categoria, a ferramenta escolhe o ponto ativo com a menor distância **por estrada** e desenha a rota até o lote, na cor da categoria. Passe o cursor sobre a rota para ver o ponto e os km. Desligar o ponto escolhido troca a rota para o seguinte.
+9. Fornecedores próprios e pontos desligados ficam salvos no navegador. Use **Exportar** para guardar um arquivo JSON ou passar para outra pessoa, e **Importar** para trazê-lo de volta. A importação junta o arquivo com o que já existe.
 
 ## Serviços externos
 
 - **Mapa base:** [OpenFreeMap](https://openfreemap.org/), estilo Positron, sem chave.
 - **Fornecedores e destinos de resíduos:** base fixa extraída do OpenStreetMap pelo [Overpass](https://wiki.openstreetmap.org/wiki/Overpass_API) e guardada em `public/dados/fornecedores-br.json`. O navegador baixa a base uma vez e filtra pelo raio localmente, sem consultar o Overpass a cada lote. Escolhemos assim porque o servidor público do Overpass é instável e a política dele desencoraja aplicações públicas que dependam dele a cada uso. A data da extração aparece na interface.
+- **Rotas:** [OSRM](https://project-osrm.org/), servidor de demonstração mantido pela [FOSSGIS](https://github.com/Project-OSRM/osrm-backend/wiki/Demo-server), com o espelho `routing.openstreetmap.de` como reserva. A política permite uso razoável e não comercial, no máximo uma requisição por segundo. A ferramenta faz uma fila com esse intervalo e consulta em três passos: separa os 10 pontos mais próximos em linha reta de cada categoria, pede uma única matriz de distâncias por estrada e só então pede o traçado das rotas escolhidas. Resultados ficam em cache por lote, então ligar e desligar pontos não repete consultas.
+- **Distância estimada:** se o serviço de rotas falhar, a distância é a linha reta × fator de tortuosidade (`src/dados-fixos/fatores.json`). A interface marca o valor com "≈" e "estimado", e a rota aparece tracejada.
 - **Busca de endereço:** [Nominatim](https://nominatim.org/), servidor público do OpenStreetMap. A ferramenta segue a [política de uso](https://operations.osmfoundation.org/policies/nominatim/): uma consulta por clique ou Enter (nunca a cada tecla), no máximo uma por segundo, resultados repetidos vindos do cache e identificação pelo endereço do site. O servidor público é para uso leve; se a ferramenta passar a ter muitos usuários, será preciso um servidor próprio ou um serviço pago.
 
 ## Base de fornecedores
@@ -69,6 +72,16 @@ Extração de 24/11/2026, Brasil inteiro:
 | Destino de resíduos | 1.596 |
 
 A cobertura de concreto e aço é muito baixa: no centro do Rio, não há nenhum ponto dessas categorias num raio de 50 km. Por isso existe o cadastro de fornecedor próprio (etapa 3) e a categoria geral de reserva.
+
+## Fatores e fontes
+
+Todo valor em `src/dados-fixos/fatores.json` tem fonte, URL e ano e entra com `"verificado": false`. Só um integrante do grupo muda para `true`, depois de conferir a fonte.
+
+| Fator | Valor | Fonte | Verificado |
+|---|---|---|---|
+| Tortuosidade (estrada / linha reta), Brasil | 1,23 | Ballou, Rahardja e Sakai (2002), *Transportation Research Part A*, 36(9), 843–848 | não: há citação secundária com 1,33; conferir a tabela original |
+
+Os demais fatores (caminhão, retorno vazio, escavação, solo) entram na etapa 5.
 
 ## Publicação
 

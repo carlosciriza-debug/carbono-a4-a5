@@ -1,7 +1,9 @@
 import { type ChangeEvent, useRef, useState } from 'react'
 import { type Categoria, CATEGORIAS } from '../compartilhado/categorias'
-import type { IdCategoria } from '../compartilhado/terreno'
+import type { IdCategoria, Rota } from '../compartilhado/terreno'
+import type { EstadoRotas } from './useRotas'
 import { FormFornecedor } from './FormFornecedor'
+import { CANDIDATOS_POR_CATEGORIA } from './rotas'
 import { agruparPorCategoria, mensagemSemPontos, type PontoComDistancia, RAIOS_KM } from './fornecedores'
 
 export type EstadoBase =
@@ -18,6 +20,9 @@ type Props = {
   estado: EstadoBase
   aoTentarDeNovo: () => void
   pontos: PontoComDistancia[]
+  rotas: Partial<Record<IdCategoria, Rota>>
+  estadoRotas: EstadoRotas
+  aoTentarRotasDeNovo: () => void
   aoAlternar: (id: string) => void
   aoEditar: (id: string, nome: string, categoria: IdCategoria) => void
   aoRemover: (id: string) => void
@@ -45,9 +50,11 @@ function formatarData(iso: string): string {
 type ListaProps = Pick<Props, 'aoAlternar' | 'aoEditar' | 'aoRemover' | 'raioKm'> & {
   categoria: Categoria
   lista: PontoComDistancia[]
+  rota: Rota | undefined
+  calculando: boolean
 }
 
-function ListaCategoria({ categoria: c, lista, raioKm, aoAlternar, aoEditar, aoRemover }: ListaProps) {
+function ListaCategoria({ categoria: c, lista, rota, calculando, raioKm, aoAlternar, aoEditar, aoRemover }: ListaProps) {
   const [todos, setTodos] = useState(false)
   const [editando, setEditando] = useState<string | null>(null)
   const ativos = lista.filter((p) => p.ativo).length
@@ -64,6 +71,18 @@ function ListaCategoria({ categoria: c, lista, raioKm, aoAlternar, aoEditar, aoR
           {ativos} / {lista.length}
         </span>
       </h3>
+
+      {rota && (
+        <p className={rota.estimada ? 'rota estimada' : 'rota'}>
+          Rota: {lista.find((p) => p.id === rota.pontoId)?.nome ?? 'Sem nome'} ·{' '}
+          <strong>
+            {rota.estimada ? '≈ ' : ''}
+            {formatarKm(rota.distanciaKm)}
+          </strong>{' '}
+          {rota.estimada ? '(estimado: linha reta × tortuosidade)' : 'por estrada'}
+        </p>
+      )}
+      {!rota && ativos > 0 && calculando && <p className="dica rota">Calculando rota…</p>}
 
       {lista.length === 0 && <p className="aviso">{mensagemSemPontos(c.nome, raioKm)}</p>}
       {lista.length > 0 && ativos === 0 && (
@@ -91,6 +110,7 @@ function ListaCategoria({ categoria: c, lista, raioKm, aoAlternar, aoEditar, aoR
                 <label className="ponto">
                   <input type="checkbox" checked={p.ativo} onChange={() => aoAlternar(p.id)} />
                   <span className={p.nome ? '' : 'sem-nome'}>{p.nome ?? 'Sem nome'}</span>
+                  {rota?.pontoId === p.id && <span className="selo escolhido">rota</span>}
                   {p.origem === 'usuario' && <span className="selo">próprio</span>}
                 </label>
                 <span className="distancia">{formatarKm(p.distanciaRetaKm)}</span>
@@ -178,12 +198,23 @@ export function PainelFornecedores(props: Props) {
             )}
           </div>
 
+          {props.estadoRotas.erro && (
+            <div className="erro">
+              <p>{props.estadoRotas.erro}</p>
+              <button type="button" onClick={props.aoTentarRotasDeNovo}>
+                Tentar de novo
+              </button>
+            </div>
+          )}
+
           <div className="categorias">
             {CATEGORIAS.map((c) => (
               <ListaCategoria
                 key={c.id}
                 categoria={c}
                 lista={grupos[c.id]}
+                rota={props.rotas[c.id]}
+                calculando={props.estadoRotas.calculando}
                 raioKm={raioKm}
                 aoAlternar={props.aoAlternar}
                 aoEditar={props.aoEditar}
@@ -191,8 +222,15 @@ export function PainelFornecedores(props: Props) {
               />
             ))}
             <p className="dica">
-              Distâncias em linha reta a partir do centro do lote. Desmarque um ponto para tirá-lo do cálculo; no mapa,
-              clique no ponto. As distâncias por estrada chegam na etapa 4.
+              A lista mostra a distância em linha reta. Para cada categoria, a rota usa o ponto ativo com a menor
+              distância por estrada, entre os {CANDIDATOS_POR_CATEGORIA} mais próximos em linha reta. Desmarque um ponto
+              para tirá-lo do cálculo; no mapa, clique no ponto.
+            </p>
+            <p className="fonte">
+              Rotas: OSRM, servidor de demonstração da FOSSGIS · dados © colaboradores do OpenStreetMap ·{' '}
+              <a href="https://www.openstreetmap.org/fixthemap" target="_blank" rel="noreferrer">
+                corrigir o mapa
+              </a>
             </p>
           </div>
         </>
