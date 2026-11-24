@@ -1,10 +1,15 @@
-import { CATEGORIAS } from '../compartilhado/categorias'
+import { type ChangeEvent, useRef, useState } from 'react'
+import { type Categoria, CATEGORIAS } from '../compartilhado/categorias'
+import type { IdCategoria } from '../compartilhado/terreno'
+import { FormFornecedor } from './FormFornecedor'
 import { agruparPorCategoria, mensagemSemPontos, type PontoComDistancia, RAIOS_KM } from './fornecedores'
 
 export type EstadoBase =
   | { tipo: 'carregando' }
   | { tipo: 'erro'; mensagem: string }
   | { tipo: 'pronta'; extraidoEm: string }
+
+export type EstadoAdicao = null | { etapa: 'local' } | { etapa: 'dados' }
 
 type Props = {
   temLote: boolean
@@ -13,6 +18,17 @@ type Props = {
   estado: EstadoBase
   aoTentarDeNovo: () => void
   pontos: PontoComDistancia[]
+  aoAlternar: (id: string) => void
+  aoEditar: (id: string, nome: string, categoria: IdCategoria) => void
+  aoRemover: (id: string) => void
+  adicao: EstadoAdicao
+  aoIniciarAdicao: () => void
+  aoCancelarAdicao: () => void
+  aoSalvarNovo: (nome: string, categoria: IdCategoria) => void
+  aoExportar: () => void
+  aoImportar: (texto: string) => void
+  mensagemArquivo: { tipo: 'ok' | 'erro'; texto: string } | null
+  salvouNoNavegador: boolean
 }
 
 const LIMITE_POR_CATEGORIA = 10
@@ -26,8 +42,94 @@ function formatarData(iso: string): string {
   return `${dia}/${mes}/${ano}`
 }
 
-export function PainelFornecedores({ temLote, raioKm, aoMudarRaio, estado, aoTentarDeNovo, pontos }: Props) {
+type ListaProps = Pick<Props, 'aoAlternar' | 'aoEditar' | 'aoRemover' | 'raioKm'> & {
+  categoria: Categoria
+  lista: PontoComDistancia[]
+}
+
+function ListaCategoria({ categoria: c, lista, raioKm, aoAlternar, aoEditar, aoRemover }: ListaProps) {
+  const [todos, setTodos] = useState(false)
+  const [editando, setEditando] = useState<string | null>(null)
+  const ativos = lista.filter((p) => p.ativo).length
+  const visiveis = todos ? lista : lista.slice(0, LIMITE_POR_CATEGORIA)
+
+  return (
+    <div className="categoria">
+      <h3>
+        <span className="marcador" style={{ background: c.cor }}>
+          {c.letra}
+        </span>
+        {c.nome}
+        <span className="contagem" title="ativos / encontrados">
+          {ativos} / {lista.length}
+        </span>
+      </h3>
+
+      {lista.length === 0 && <p className="aviso">{mensagemSemPontos(c.nome, raioKm)}</p>}
+      {lista.length > 0 && ativos === 0 && (
+        <p className="aviso">Todos os pontos desta categoria estão desligados. Ligue algum ou adicione um no mapa.</p>
+      )}
+
+      {lista.length > 0 && (
+        <ul className="pontos">
+          {visiveis.map((p) =>
+            editando === p.id ? (
+              <li key={p.id}>
+                <FormFornecedor
+                  titulo="Editar fornecedor"
+                  nomeInicial={p.nome ?? ''}
+                  categoriaInicial={p.categoria}
+                  aoSalvar={(nome, categoria) => {
+                    aoEditar(p.id, nome, categoria)
+                    setEditando(null)
+                  }}
+                  aoCancelar={() => setEditando(null)}
+                />
+              </li>
+            ) : (
+              <li key={p.id} className={p.ativo ? '' : 'desligado'}>
+                <label className="ponto">
+                  <input type="checkbox" checked={p.ativo} onChange={() => aoAlternar(p.id)} />
+                  <span className={p.nome ? '' : 'sem-nome'}>{p.nome ?? 'Sem nome'}</span>
+                  {p.origem === 'usuario' && <span className="selo">próprio</span>}
+                </label>
+                <span className="distancia">{formatarKm(p.distanciaRetaKm)}</span>
+                {p.origem === 'usuario' && (
+                  <span className="acoes-ponto">
+                    <button type="button" className="link" onClick={() => setEditando(p.id)}>
+                      editar
+                    </button>
+                    <button type="button" className="link" onClick={() => aoRemover(p.id)}>
+                      remover
+                    </button>
+                  </span>
+                )}
+              </li>
+            ),
+          )}
+          {lista.length > LIMITE_POR_CATEGORIA && (
+            <li>
+              <button type="button" className="link" onClick={() => setTodos(!todos)}>
+                {todos ? 'Mostrar menos' : `Mostrar todos (${lista.length})`}
+              </button>
+            </li>
+          )}
+        </ul>
+      )}
+    </div>
+  )
+}
+
+export function PainelFornecedores(props: Props) {
+  const { temLote, raioKm, aoMudarRaio, estado, aoTentarDeNovo, pontos, adicao, mensagemArquivo } = props
   const grupos = agruparPorCategoria(pontos)
+  const arquivo = useRef<HTMLInputElement>(null)
+
+  async function lerArquivo(e: ChangeEvent<HTMLInputElement>) {
+    const escolhido = e.target.files?.[0]
+    e.target.value = ''
+    if (escolhido) props.aoImportar(await escolhido.text())
+  }
 
   return (
     <section className="secao">
@@ -56,38 +158,61 @@ export function PainelFornecedores({ temLote, raioKm, aoMudarRaio, estado, aoTen
       {estado.tipo === 'pronta' && !temLote && <p className="pendente">Desenhe o lote para ver os fornecedores.</p>}
 
       {estado.tipo === 'pronta' && temLote && (
-        <div className="categorias">
-          {CATEGORIAS.map((c) => {
-            const lista = grupos[c.id]
-            return (
-              <div key={c.id} className="categoria">
-                <h3>
-                  <span className="marcador" style={{ background: c.cor }}>
-                    {c.letra}
-                  </span>
-                  {c.nome}
-                  <span className="contagem">{lista.length}</span>
-                </h3>
-                {lista.length === 0 ? (
-                  <p className="aviso">{mensagemSemPontos(c.nome, raioKm)}</p>
-                ) : (
-                  <ul className="pontos">
-                    {lista.slice(0, LIMITE_POR_CATEGORIA).map((p) => (
-                      <li key={p.id}>
-                        <span className={p.nome ? '' : 'sem-nome'}>{p.nome ?? 'Sem nome'}</span>
-                        <span className="distancia">{formatarKm(p.distanciaRetaKm)}</span>
-                      </li>
-                    ))}
-                    {lista.length > LIMITE_POR_CATEGORIA && (
-                      <li className="mais">e mais {lista.length - LIMITE_POR_CATEGORIA} no mapa</li>
-                    )}
-                  </ul>
-                )}
-              </div>
-            )
-          })}
-          <p className="dica">Distâncias em linha reta a partir do centro do lote. As distâncias por estrada chegam na etapa 4.</p>
-        </div>
+        <>
+          <div className="adicionar">
+            {adicao === null && (
+              <button type="button" onClick={props.aoIniciarAdicao}>
+                Adicionar fornecedor no mapa
+              </button>
+            )}
+            {adicao?.etapa === 'local' && (
+              <>
+                <p className="dica">Clique no mapa onde fica o fornecedor.</p>
+                <button type="button" onClick={props.aoCancelarAdicao}>
+                  Cancelar
+                </button>
+              </>
+            )}
+            {adicao?.etapa === 'dados' && (
+              <FormFornecedor titulo="Novo fornecedor" aoSalvar={props.aoSalvarNovo} aoCancelar={props.aoCancelarAdicao} />
+            )}
+          </div>
+
+          <div className="categorias">
+            {CATEGORIAS.map((c) => (
+              <ListaCategoria
+                key={c.id}
+                categoria={c}
+                lista={grupos[c.id]}
+                raioKm={raioKm}
+                aoAlternar={props.aoAlternar}
+                aoEditar={props.aoEditar}
+                aoRemover={props.aoRemover}
+              />
+            ))}
+            <p className="dica">
+              Distâncias em linha reta a partir do centro do lote. Desmarque um ponto para tirá-lo do cálculo; no mapa,
+              clique no ponto. As distâncias por estrada chegam na etapa 4.
+            </p>
+          </div>
+        </>
+      )}
+
+      <div className="linha acoes">
+        <button type="button" onClick={props.aoExportar}>
+          Exportar
+        </button>
+        <button type="button" onClick={() => arquivo.current?.click()}>
+          Importar
+        </button>
+        <input ref={arquivo} type="file" accept="application/json,.json" hidden onChange={lerArquivo} />
+      </div>
+      <p className="dica">Exporta e importa seus fornecedores e os pontos desligados, num arquivo JSON.</p>
+      {mensagemArquivo && <p className={mensagemArquivo.tipo === 'erro' ? 'erro' : 'dica'}>{mensagemArquivo.texto}</p>}
+      {!props.salvouNoNavegador && (
+        <p className="aviso-forte">
+          O navegador não deixou salvar suas alterações. Elas somem ao recarregar a página; use Exportar para não perder.
+        </p>
       )}
 
       {estado.tipo === 'pronta' && (

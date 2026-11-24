@@ -4,7 +4,7 @@ Mapa interativo para escolher um terreno em qualquer lugar do Brasil e ver o car
 
 A ferramenta encontra fornecedores e destinos de resíduos perto do terreno com dados abertos do OpenStreetMap e calcula as distâncias reais por estrada. Ela complementa as calculadoras de ciclo de vida e não as substitui.
 
-> Em construção. Etapa atual: 2 (fornecedores e destinos de resíduos no entorno).
+> Em construção. Etapa atual: 3 (ligar e desligar pontos, fornecedor próprio, exportar e importar).
 
 **Endereço público:** https://obrunoheringer1.github.io/carbono-a4-a5/
 
@@ -37,6 +37,9 @@ src/
 3. Para editar, arraste os vértices; os pontos no meio das arestas criam vértices novos. Para mover, arraste o lote.
 4. O painel mostra a área em m² e as coordenadas do centro.
 5. Em **Fornecedores**, escolha o raio (25, 50, 100 ou 200 km). Os pontos aparecem no mapa, com cor e letra por categoria, e na lista, do mais perto ao mais longe (em linha reta).
+6. Desmarque um ponto na lista, ou clique nele no mapa e escolha **Desligar**, para tirá-lo do cálculo.
+7. Para cadastrar um fornecedor que não está no mapa, clique em **Adicionar fornecedor no mapa**, clique no local e informe nome e categoria. No mapa, ele aparece com contorno preto. Fornecedores próprios entram sempre, mesmo fora do raio, e podem ser editados e removidos na lista.
+8. Fornecedores próprios e pontos desligados ficam salvos no navegador. Use **Exportar** para guardar um arquivo JSON ou passar para outra pessoa, e **Importar** para trazê-lo de volta. A importação junta o arquivo com o que já existe.
 
 ## Serviços externos
 
