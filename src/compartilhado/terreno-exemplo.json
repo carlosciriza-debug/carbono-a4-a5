@@ -1,0 +1,137 @@
+{
+  "_sobre": "Terreno de exemplo (SPEC 5.1): lote real na Praça Mauá, Rio de Janeiro, e os dois pontos mais próximos de cada categoria num raio de 50 km, tirados de public/dados/fornecedores-br.json (extração de 2026-11-24). Rotas e resultados ficam vazios até as etapas 4 e 5.",
+  "lote": {
+    "poligono": {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -43.1809,
+              -22.8951
+            ],
+            [
+              -43.1798,
+              -22.8951
+            ],
+            [
+              -43.1798,
+              -22.896
+            ],
+            [
+              -43.1809,
+              -22.896
+            ],
+            [
+              -43.1809,
+              -22.8951
+            ]
+          ]
+        ]
+      }
+    },
+    "areaM2": 11276.3,
+    "centro": [
+      -43.18035,
+      -22.89555
+    ]
+  },
+  "edificio": {
+    "areaConstruidaM2": 5000,
+    "volumeTerraM3": 0
+  },
+  "pontos": [
+    {
+      "id": "node/12453514134",
+      "nome": null,
+      "categoria": "madeira",
+      "coordenadas": [
+        -43.255991,
+        -22.888858
+      ],
+      "origem": "osm",
+      "ativo": true
+    },
+    {
+      "id": "node/12453514155",
+      "nome": null,
+      "categoria": "madeira",
+      "coordenadas": [
+        -43.258847,
+        -22.891456
+      ],
+      "origem": "osm",
+      "ativo": true
+    },
+    {
+      "id": "way/238275205",
+      "nome": null,
+      "categoria": "agregados",
+      "coordenadas": [
+        -43.120719,
+        -22.923197
+      ],
+      "origem": "osm",
+      "ativo": true
+    },
+    {
+      "id": "way/1308926200",
+      "nome": null,
+      "categoria": "agregados",
+      "coordenadas": [
+        -43.111767,
+        -22.890285
+      ],
+      "origem": "osm",
+      "ativo": true
+    },
+    {
+      "id": "node/3695986174",
+      "nome": "Multicoisas",
+      "categoria": "geral",
+      "coordenadas": [
+        -43.175993,
+        -22.903449
+      ],
+      "origem": "osm",
+      "ativo": true
+    },
+    {
+      "id": "node/5092147280",
+      "nome": "Eletro Ferragens Dois Amigos Ltda.",
+      "categoria": "geral",
+      "coordenadas": [
+        -43.18476,
+        -22.906953
+      ],
+      "origem": "osm",
+      "ativo": true
+    },
+    {
+      "id": "way/228765389",
+      "nome": null,
+      "categoria": "residuos",
+      "coordenadas": [
+        -43.231173,
+        -22.877645
+      ],
+      "origem": "osm",
+      "ativo": true
+    },
+    {
+      "id": "node/12453508850",
+      "nome": null,
+      "categoria": "residuos",
+      "coordenadas": [
+        -43.238295,
+        -22.908145
+      ],
+      "origem": "osm",
+      "ativo": true
+    }
+  ],
+  "rotas": {},
+  "resultados": {}
+}

@@ -1,0 +1,58 @@
+{
+  "_sobre": "Categorias de fornecedores e destinos (SPEC, seção 6). Cada filtro é um seletor do Overpass aplicado a nós, vias e relações. Depois de mudar este arquivo, rode `npm run extrair-fornecedores` para atualizar a base.",
+  "categorias": [
+    {
+      "id": "concreto",
+      "nome": "Concreto e cimento",
+      "usadaEm": ["A4"],
+      "cor": "#0072B2",
+      "letra": "C",
+      "filtros": ["[\"man_made\"=\"works\"][\"product\"~\"concrete|cement\",i]"]
+    },
+    {
+      "id": "aco",
+      "nome": "Aço",
+      "usadaEm": ["A4"],
+      "cor": "#D55E00",
+      "letra": "A",
+      "filtros": ["[\"man_made\"=\"works\"][\"product\"~\"steel\",i]"]
+    },
+    {
+      "id": "madeira",
+      "nome": "Madeira",
+      "usadaEm": ["A4"],
+      "cor": "#009E73",
+      "letra": "M",
+      "filtros": ["[\"craft\"=\"sawmill\"]", "[\"shop\"=\"trade\"][\"trade\"=\"timber\"]"]
+    },
+    {
+      "id": "agregados",
+      "nome": "Agregados",
+      "usadaEm": ["A4"],
+      "cor": "#E69F00",
+      "letra": "G",
+      "filtros": ["[\"landuse\"=\"quarry\"]"]
+    },
+    {
+      "id": "geral",
+      "nome": "Material de construção em geral",
+      "usadaEm": ["A4"],
+      "reserva": true,
+      "cor": "#CC79A7",
+      "letra": "L",
+      "filtros": ["[\"shop\"=\"trade\"][\"trade\"=\"building_materials\"]", "[\"shop\"=\"doityourself\"]"]
+    },
+    {
+      "id": "residuos",
+      "nome": "Destino de resíduos",
+      "usadaEm": ["A5"],
+      "cor": "#56B4E9",
+      "letra": "R",
+      "filtros": [
+        "[\"landuse\"=\"landfill\"]",
+        "[\"amenity\"=\"waste_transfer_station\"]",
+        "[\"amenity\"=\"recycling\"][\"recycling_type\"=\"centre\"]"
+      ]
+    }
+  ]
+}

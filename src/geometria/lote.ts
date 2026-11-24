@@ -1,12 +1,9 @@
 import area from '@turf/area'
 import centroid from '@turf/centroid'
 import type { Feature, Polygon, Position } from 'geojson'
+import type { Lote } from '../compartilhado/terreno'
 
-export type Lote = {
-  poligono: Feature<Polygon>
-  areaM2: number
-  centro: Position // [longitude, latitude]
-}
+export type { Lote }
 
 export function calcularLote(poligono: Feature<Polygon>): Lote {
   return {
