@@ -1,5 +1,5 @@
 {
-  "_sobre": "Sistemas construtivos (SPEC, seção 7): massa de cada material por m² de área construída, perda em obra e referência de A1–A3. valor=null enquanto não houver fonte verificada; o cálculo correspondente aparece como pendente. Lista de materiais a confirmar com a fonte das massas.",
+  "_sobre": "Sistemas construtivos (SPEC, seção 7): massa de cada material por m² de área construída, perda em obra e referência de A1–A3. Decisão do grupo: só dados brasileiros. valor=null quando não há fonte brasileira; o cálculo correspondente aparece como pendente.",
   "sistemas": [
     {
       "id": "concreto",
@@ -71,12 +71,13 @@
           "nome": "Aço estrutural",
           "categoria": "aco",
           "intensidade": {
-            "valor": null,
+            "valor": 52.97,
             "unidade": "kg/m²",
-            "fonte": "Pendente: Hart, D'Amico e Pomponi (2021), J. Industrial Ecology 25(2):403–418 (texto completo ainda não lido).",
-            "url": "https://doi.org/10.1111/jiec.13139",
-            "ano": 2021,
-            "verificado": false
+            "fonte": "Machado, R. T. Análise da viabilidade econômica do projeto estrutural de edifícios de múltiplos andares com estrutura de aço. Dissertação (Mestrado), EESC-USP, 2012. Tabela 4.13, p. 128 (Modelo 1).",
+            "url": "https://teses.usp.br/teses/disponiveis/18/18134/tde-23102012-095547/publico/2012ME_RafaelTamaniniMachado.pdf",
+            "ano": 2012,
+            "verificado": false,
+            "nota": "Edifício de escritórios de 20 pavimentos (modelo teórico, 900 m² por andar), lajes steel deck. Só perfis de aço (pilares, vigas, contraventamentos); não inclui a fôrma de aço da laje, armaduras, conectores e ligações. Os quatro modelos da dissertação variam de 51,80 a 52,97 kg/m²."
           },
           "perda": {
             "valor": 0.01,
@@ -94,9 +95,9 @@
           "intensidade": {
             "valor": null,
             "unidade": "kg/m²",
-            "fonte": "Pendente: Hart, D'Amico e Pomponi (2021).",
-            "url": "https://doi.org/10.1111/jiec.13139",
-            "ano": 2021,
+            "fonte": "Pendente: sem fonte brasileira com o volume de concreto das lajes de edifício em aço. Machado (2012) só informa a carga da laje (2,56 kN/m², Tab. 1.1).",
+            "url": "",
+            "ano": null,
             "verificado": false
           },
           "perda": {
@@ -112,9 +113,9 @@
       "referenciaA1A3": {
         "valor": null,
         "unidade": "kgCO2e/m²",
-        "fonte": "Pendente: Hart, D'Amico e Pomponi (2021) — no resumo só há o ciclo de vida inteiro (mediana 228), não A1–A3.",
-        "url": "https://doi.org/10.1111/jiec.13139",
-        "ano": 2021,
+        "fonte": "Pendente: não foi encontrada referência brasileira de A1–A3 para edifício de múltiplos andares em aço.",
+        "url": "",
+        "ano": null,
         "verificado": false
       }
     },
@@ -129,9 +130,9 @@
           "intensidade": {
             "valor": null,
             "unidade": "kg/m²",
-            "fonte": "Pendente: Hart, D'Amico e Pomponi (2021).",
-            "url": "https://doi.org/10.1111/jiec.13139",
-            "ano": 2021,
+            "fonte": "Pendente: não há dado brasileiro de madeira engenheirada por m² para edifício de múltiplos andares; o estoque brasileiro em CLT é de até 2 pavimentos (levantamento euroELECS 2023).",
+            "url": "",
+            "ano": null,
             "verificado": false
           },
           "perda": {
@@ -145,21 +146,21 @@
           }
         },
         {
-          "id": "concreto-fundacao",
-          "nome": "Concreto (fundação)",
-          "categoria": "concreto",
+          "id": "aco-ligacoes",
+          "nome": "Aço (ligações)",
+          "categoria": "aco",
           "intensidade": {
             "valor": null,
             "unidade": "kg/m²",
-            "fonte": "Pendente: Hart, D'Amico e Pomponi (2021).",
-            "url": "https://doi.org/10.1111/jiec.13139",
-            "ano": 2021,
+            "fonte": "Pendente: sem fonte brasileira.",
+            "url": "",
+            "ano": null,
             "verificado": false
           },
           "perda": {
-            "valor": 0.05,
+            "valor": 0.01,
             "unidade": "fração",
-            "fonte": "RICS 2023, Tabela 18: concreto moldado in loco, 5%.",
+            "fonte": "RICS 2023, Tabela 18: estrutura de aço, 1%.",
             "url": "https://www.rics.org/content/dam/ricsglobal/documents/standards/Whole_life_carbon_assessment_PS_Sept23.pdf",
             "ano": 2023,
             "verificado": false
@@ -169,9 +170,9 @@
       "referenciaA1A3": {
         "valor": null,
         "unidade": "kgCO2e/m²",
-        "fonte": "Pendente: Hart, D'Amico e Pomponi (2021) — no resumo só há o ciclo de vida inteiro (mediana 119), não A1–A3.",
-        "url": "https://doi.org/10.1111/jiec.13139",
-        "ano": 2021,
+        "fonte": "Pendente: não há referência brasileira de A1–A3 para edifício de múltiplos andares em madeira, e não existe DAP brasileira de CLT (Souza e Punhagui, ENTAC 2026).",
+        "url": "",
+        "ano": null,
         "verificado": false
       }
     }

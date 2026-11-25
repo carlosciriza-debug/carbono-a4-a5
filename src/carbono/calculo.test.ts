@@ -139,3 +139,22 @@ describe('fatoresNaoVerificados', () => {
     expect(lista).toContain('Concreto: referência A1–A3')
   })
 })
+
+describe('caso conferido à mão com os dados reais (tabela do README)', async () => {
+  const { SISTEMAS } = await import('./sistemas')
+  const { FATORES } = await import('../compartilhado/fatores')
+  const concreto = SISTEMAS.find((s) => s.id === 'concreto')!
+  const r = calcularSistema(concreto, edificio, { concreto: rota('c', 20), geral: rota('g', 10), residuos: rota('r', 15) }, FATORES)
+
+  it('A4 = 528 t × 20 km × 0,0592 × 2 + 20,9 t × 10 km × 0,0592 × 2 = 1.275,05', () => {
+    expect(r.a4KgCO2e).toBeCloseTo(1275.0496, 6)
+  })
+  it('A5 = resíduos 48,74 + terra (200 × 3,5 + 200 × 1,84 × 15 × 0,0592 × 2) 1.353,57 = 1.402,31', () => {
+    expect(r.a5ResiduosKgCO2e).toBeCloseTo(48.74232, 6)
+    expect(r.a5TerraKgCO2e).toBeCloseTo(1353.568, 6)
+    expect(r.a5KgCO2e).toBeCloseTo(1402.31032, 6)
+  })
+  it('referência A1–A3 = 81 × 1.000 m² = 81.000', () => {
+    expect(r.referenciaA1A3KgCO2e).toBe(81_000)
+  })
+})
