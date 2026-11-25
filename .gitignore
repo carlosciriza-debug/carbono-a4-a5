@@ -29,3 +29,6 @@ dist-ssr
 
 # Configuração local do Claude Code
 .claude/
+
+# PDFs das fontes (lidos localmente, não versionados)
+fontes/
