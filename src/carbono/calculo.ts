@@ -83,13 +83,15 @@ export function calcularSistema(
     // A4
     const origem = rotaDoMaterial(m.categoria, rotas)
     if (!origem) pendencias.push(`${m.nome}: nenhum fornecedor ativo no raio.`)
-    else {
+    else if (massa !== null) {
+      // Só avisa sobre o que de fato entrou na soma.
       if (origem.substituicao) avisos.push(`${m.nome}: usado o fornecedor geral mais próximo, por falta de um específico.`)
       if (origem.rota.estimada) avisos.push(`${m.nome}: distância estimada (linha reta × tortuosidade).`)
     }
     detalhamento.push({
       modulo: 'A4',
       material: m.nome,
+      categoria: m.categoria,
       massaT: massa,
       pontoId: origem?.rota.pontoId ?? null,
       distanciaKm: origem?.rota.distanciaKm ?? null,
@@ -108,6 +110,7 @@ export function calcularSistema(
     detalhamento.push({
       modulo: 'A5 resíduos',
       material: m.nome,
+      categoria: 'residuos',
       massaT: massaResiduo,
       pontoId: destino?.pontoId ?? null,
       distanciaKm: destino?.distanciaKm ?? null,
@@ -139,6 +142,7 @@ export function calcularSistema(
     detalhamento.push({
       modulo: 'A5 terra',
       material: 'Solo escavado',
+      categoria: 'residuos',
       massaT: massaSolo,
       pontoId: destino?.pontoId ?? null,
       distanciaKm: destino?.distanciaKm ?? null,
@@ -150,7 +154,8 @@ export function calcularSistema(
 
   const a4 = soma(detalhamento.filter((d) => d.modulo === 'A4').map((d) => d.kgCO2e))
   const a5Residuos = soma(detalhamento.filter((d) => d.modulo === 'A5 resíduos').map((d) => d.kgCO2e))
-  const a5 = soma([a5Residuos, a5Terra])
+  // Sem movimento de terra, o zero da terra não é uma parcela calculada: A5 depende só dos resíduos.
+  const a5 = volume > 0 ? soma([a5Residuos, a5Terra]) : a5Residuos
   const referencia = sistema.referenciaA1A3.valor
 
   return {

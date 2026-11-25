@@ -16,7 +16,8 @@
             "url": "https://doi.org/10.1016/j.jobe.2023.108234",
             "ano": 2024,
             "verificado": false,
-            "nota": "0,22 m³/m² × 2.400 kg/m³ = 528 kg/m². 53 edifícios residenciais multifamiliares brasileiros; só pavimentos-tipo (sem fundação, térreo, pódio e cobertura). Média, não mediana."
+            "nota": "0,22 m³/m² × 2.400 kg/m³ = 528 kg/m². 53 edifícios residenciais multifamiliares brasileiros; só pavimentos-tipo (sem fundação, térreo, pódio e cobertura). Média, não mediana.",
+            "citacao": "Belizário-Silva et al. (2024)"
           },
           "perda": {
             "valor": 0.05,
@@ -25,7 +26,8 @@
             "url": "https://www.rics.org/content/dam/ricsglobal/documents/standards/Whole_life_carbon_assessment_PS_Sept23.pdf",
             "ano": 2023,
             "verificado": false,
-            "nota": "Taxa britânica de resíduo. O estudo FINEP/ITQC (Souza et al., dados de 1998) mede perda total de concreto no Brasil, com mediana de 9%; outro conceito."
+            "nota": "Taxa britânica de resíduo. O estudo FINEP/ITQC (Souza et al., dados de 1998) mede perda total de concreto no Brasil, com mediana de 9%; outro conceito.",
+            "citacao": "RICS (2023)"
           }
         },
         {
@@ -39,7 +41,8 @@
             "url": "https://doi.org/10.1016/j.jobe.2023.108234",
             "ano": 2024,
             "verificado": false,
-            "nota": "0,22 m³/m² × 95 kg/m³ = 20,9 kg/m². Coerente com o artigo: aço ≈ 4% da massa (528 + 20,9 = 549 kg/m²; 20,9/549 = 3,8%)."
+            "nota": "0,22 m³/m² × 95 kg/m³ = 20,9 kg/m². Coerente com o artigo: aço ≈ 4% da massa (528 + 20,9 = 549 kg/m²; 20,9/549 = 3,8%).",
+            "citacao": "Belizário-Silva et al. (2024)"
           },
           "perda": {
             "valor": 0.05,
@@ -48,7 +51,8 @@
             "url": "https://www.rics.org/content/dam/ricsglobal/documents/standards/Whole_life_carbon_assessment_PS_Sept23.pdf",
             "ano": 2023,
             "verificado": false,
-            "nota": "FINEP/ITQC: perda total de aço no Brasil, mediana de 11%."
+            "nota": "FINEP/ITQC: perda total de aço no Brasil, mediana de 11%.",
+            "citacao": "RICS (2023)"
           }
         }
       ],
@@ -59,7 +63,8 @@
         "url": "https://doi.org/10.1016/j.jobe.2023.108234",
         "ano": 2024,
         "verificado": false,
-        "nota": "Só CO2 (sem outros gases), só estrutura dos pavimentos-tipo, módulos A1–A3. Fatores do Sidac."
+        "nota": "Só CO2 (sem outros gases), só estrutura dos pavimentos-tipo, módulos A1–A3. Fatores do Sidac.",
+        "citacao": "Belizário-Silva et al. (2024)"
       }
     },
     {
@@ -77,7 +82,8 @@
             "url": "https://teses.usp.br/teses/disponiveis/18/18134/tde-23102012-095547/publico/2012ME_RafaelTamaniniMachado.pdf",
             "ano": 2012,
             "verificado": false,
-            "nota": "Edifício de escritórios de 20 pavimentos (modelo teórico, 900 m² por andar), lajes steel deck. Só perfis de aço (pilares, vigas, contraventamentos); não inclui a fôrma de aço da laje, armaduras, conectores e ligações. Os quatro modelos da dissertação variam de 51,80 a 52,97 kg/m²."
+            "nota": "Edifício de escritórios de 20 pavimentos (modelo teórico, 900 m² por andar), lajes steel deck. Só perfis de aço (pilares, vigas, contraventamentos); não inclui a fôrma de aço da laje, armaduras, conectores e ligações. Os quatro modelos da dissertação variam de 51,80 a 52,97 kg/m².",
+            "citacao": "Machado, EESC-USP (2012)"
           },
           "perda": {
             "valor": 0.01,
@@ -85,12 +91,13 @@
             "fonte": "RICS 2023, Tabela 18: estrutura de aço, 1%.",
             "url": "https://www.rics.org/content/dam/ricsglobal/documents/standards/Whole_life_carbon_assessment_PS_Sept23.pdf",
             "ano": 2023,
-            "verificado": false
+            "verificado": false,
+            "citacao": "RICS (2023)"
           }
         },
         {
           "id": "concreto-lajes",
-          "nome": "Concreto (lajes e fundação)",
+          "nome": "Concreto (lajes)",
           "categoria": "concreto",
           "intensidade": {
             "valor": null,
@@ -106,7 +113,8 @@
             "fonte": "RICS 2023, Tabela 18: concreto moldado in loco, 5%.",
             "url": "https://www.rics.org/content/dam/ricsglobal/documents/standards/Whole_life_carbon_assessment_PS_Sept23.pdf",
             "ano": 2023,
-            "verificado": false
+            "verificado": false,
+            "citacao": "RICS (2023)"
           }
         }
       ],
@@ -142,7 +150,8 @@
             "url": "https://www.rics.org/content/dam/ricsglobal/documents/standards/Whole_life_carbon_assessment_PS_Sept23.pdf",
             "ano": 2023,
             "verificado": false,
-            "nota": "A RICS não tem linha para CLT ou MLC; esta é a mais próxima."
+            "nota": "A RICS não tem linha para CLT ou MLC; esta é a mais próxima.",
+            "citacao": "RICS (2023)"
           }
         },
         {
@@ -163,7 +172,8 @@
             "fonte": "RICS 2023, Tabela 18: estrutura de aço, 1%.",
             "url": "https://www.rics.org/content/dam/ricsglobal/documents/standards/Whole_life_carbon_assessment_PS_Sept23.pdf",
             "ano": 2023,
-            "verificado": false
+            "verificado": false,
+            "citacao": "RICS (2023)"
           }
         }
       ],

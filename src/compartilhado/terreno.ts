@@ -36,6 +36,7 @@ export type Rota = {
 export type DetalheMaterial = {
   modulo: 'A4' | 'A5 resíduos' | 'A5 terra'
   material: string
+  categoria: IdCategoria // cor da barra: categoria do material (A4) ou destino de resíduos (A5)
   massaT: number | null
   pontoId: string | null
   distanciaKm: number | null
