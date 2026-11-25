@@ -7,6 +7,7 @@
     "url": "https://web.bndes.gov.br/bib/jspui/bitstream/1408/27428/1/PRCapLiv_216305_Descarboniza%c3%a7%c3%a3o%20no%20transporte%20de%20cargas.pdf",
     "ano": 2024,
     "verificado": false,
+    "citacao": "BNDES / EPL-Iema (2024)",
     "nota": "Frota brasileira, diesel B10 (2,37 kgCO2/l). Só CO2, sem CH4 e N2O. Por tonelada útil transportada (TKU), só ida. A tabela imprime 'g', mas a unidade coerente é kg por 1.000 TKU (59,2 kg/1000 TKU = 0,0592 kg/TKU). Não foi possível abrir o original da EPL & Iema. Não foi possível confirmar se a média da frota já inclui viagens vazias; se incluir, o ×2 do retorno vazio conta essa parte duas vezes."
   },
   "retornoVazio": {
@@ -16,6 +17,7 @@
     "url": "https://sidac.org.br/documentos/Sidac_Metodologia_v1.0.pdf",
     "ano": 2022,
     "verificado": false,
+    "citacao": "Sidac, Metodologia v1.0 (2022)",
     "nota": "Supõe que todo caminhão volta vazio, o que é conservador. A RICS (2023) usa 43% de retorno vazio, ou 100% para betoneiras."
   },
   "tortuosidade": {
@@ -25,6 +27,7 @@
     "url": "https://doi.org/10.1016/S0965-8564(01)00044-1",
     "ano": 2002,
     "verificado": false,
+    "citacao": "Ballou, Rahardja e Sakai (2002)",
     "nota": "Lido na reprodução da tabela em material do MIT (CTL.SC1x, p. 11): Brasil 1,23 (desvio-padrão 0,11); a China aparece com 1,33, o que explica a citação secundária de 1,33 para o Brasil. O artigo original não pôde ser aberto. Feito para viagens entre cidades; em centros urbanos subestima a distância."
   },
   "escavacao": {
@@ -34,6 +37,7 @@
     "url": "https://www.egbc.ca/getmedia/a7603519-43cc-4795-8558-6960b2b7b5d1/HTCEC-2nd-edition.pdf",
     "ano": 2022,
     "verificado": false,
+    "citacao": "IStructE (2022)",
     "nota": "Exemplo britânico: escavação de areia e pedregulho firmes, 2 a 5 m de profundidade. Não há fator brasileiro por m³ no Sidac."
   },
   "densidadeSolo": {
@@ -43,6 +47,7 @@
     "url": "https://www.abntcatalogo.com.br/",
     "ano": 2019,
     "verificado": false,
+    "citacao": "ABNT NBR 6120:2019",
     "nota": "18 kN/m³ ÷ 9,81 m/s² = 1,84 t/m³. Lido numa cópia não oficial da norma; conferir no original da ABNT."
   },
   "alturaPorPavimento": {
@@ -52,6 +57,7 @@
     "url": "https://wiki.openstreetmap.org/wiki/Key:building:levels",
     "ano": 2026,
     "verificado": false,
+    "citacao": "OSM Wiki",
     "nota": "Só para o contexto 3D dos vizinhos (etapa 7); não entra em cálculo."
   }
 }

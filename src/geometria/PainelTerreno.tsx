@@ -1,4 +1,4 @@
-import { type FormEvent, useState } from 'react'
+import { type FormEvent, type ReactNode, useState } from 'react'
 import { buscarEndereco, ErroBusca, type ResultadoBusca } from './busca'
 import { formatarArea, formatarCoordenadas, type Lote } from './lote'
 
@@ -8,9 +8,10 @@ type Props = {
   aoEscolherEndereco: (resultado: ResultadoBusca) => void
   aoDesenhar: () => void
   aoApagar: () => void
+  children?: ReactNode
 }
 
-export function PainelTerreno({ lote, desenhando, aoEscolherEndereco, aoDesenhar, aoApagar }: Props) {
+export function PainelTerreno({ lote, desenhando, aoEscolherEndereco, aoDesenhar, aoApagar, children }: Props) {
   const [texto, setTexto] = useState('')
   const [buscando, setBuscando] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
@@ -111,6 +112,8 @@ export function PainelTerreno({ lote, desenhando, aoEscolherEndereco, aoDesenhar
       )}
 
       <p className="fonte">Busca: Nominatim · © colaboradores do OpenStreetMap</p>
+
+      {children}
     </section>
   )
 }

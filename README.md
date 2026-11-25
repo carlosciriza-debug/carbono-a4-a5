@@ -4,7 +4,7 @@ Mapa interativo para escolher um terreno em qualquer lugar do Brasil e ver o car
 
 A ferramenta encontra fornecedores e destinos de resíduos perto do terreno com dados abertos do OpenStreetMap e calcula as distâncias reais por estrada. Ela complementa as calculadoras de ciclo de vida e não as substitui.
 
-> Em construção. Etapa atual: 5 (fatores com fonte e cálculo de A4 e A5).
+> Em construção. Etapa atual: 6 (dados do edifício e resultado).
 
 **Endereço público:** https://obrunoheringer1.github.io/carbono-a4-a5/
 
@@ -40,7 +40,13 @@ src/
 6. Desmarque um ponto na lista, ou clique nele no mapa e escolha **Desligar**, para tirá-lo do cálculo.
 7. Para cadastrar um fornecedor que não está no mapa, clique em **Adicionar fornecedor no mapa**, clique no local e informe nome e categoria. No mapa, ele aparece com contorno preto. Fornecedores próprios entram sempre, mesmo fora do raio, e podem ser editados e removidos na lista.
 8. Para cada categoria, a ferramenta escolhe o ponto ativo com a menor distância **por estrada** e desenha a rota até o lote, na cor da categoria. Passe o cursor sobre a rota para ver o ponto e os km. Desligar o ponto escolhido troca a rota para o seguinte.
-9. Fornecedores próprios e pontos desligados ficam salvos no navegador. Use **Exportar** para guardar um arquivo JSON ou passar para outra pessoa, e **Importar** para trazê-lo de volta. A importação junta o arquivo com o que já existe.
+9. Em **Edifício**, informe a área construída (controle deslizante ou número) e o volume de movimento de terra. Destaque um sistema para vê-lo em evidência e no detalhamento.
+10. Em **Resultado**:
+    - o primeiro gráfico mostra A4 e A5 por sistema, com segmentos na cor de cada categoria, em kgCO₂e ou kgCO₂e/m²;
+    - o segundo põe A4 + A5 ao lado da referência de A1–A3 (hachurada, "referência, não calculado"), para dar escala;
+    - a tabela detalha material, massa, origem, distância e emissão;
+    - as premissas listam a fonte de cada fator, o que é estimado e o que está pendente.
+11. Fornecedores próprios e pontos desligados ficam salvos no navegador. Use **Exportar** para guardar um arquivo JSON ou passar para outra pessoa, e **Importar** para trazê-lo de volta. A importação junta o arquivo com o que já existe.
 
 ## Serviços externos
 

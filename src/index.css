@@ -299,6 +299,7 @@ h3 {
 }
 
 .selo {
+  margin-left: 4px;
   font-size: 10px;
   border: 1px solid var(--texto);
   padding: 0 4px;
@@ -357,4 +358,207 @@ button.link:hover:not(:disabled) {
 
 .fonte a {
   color: inherit;
+}
+
+/* ---------- Edifício e resultado ---------- */
+
+.edificio {
+  border-top: 1px dashed var(--linha);
+  margin-top: 16px;
+  padding-top: 12px;
+}
+
+.subtitulo {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--texto-secundario);
+  margin: 16px 0 8px;
+}
+
+.edificio label {
+  margin-top: 8px;
+}
+
+.controle-area input[type='range'] {
+  flex: 1;
+}
+
+input.numero {
+  width: 110px;
+  flex: none;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.destaque {
+  border: none;
+  padding: 0;
+  margin: 12px 0 0;
+}
+
+.destaque legend {
+  font-size: 12px;
+  color: var(--texto-secundario);
+  margin-bottom: 4px;
+}
+
+.destaque label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 12px 0 0;
+  font-size: 13px;
+  color: var(--texto);
+}
+
+.aviso-fixo {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  margin: 0 0 12px;
+  padding: 8px 10px;
+  border: 1px solid #8a5a00;
+  background: #fff8e6;
+  color: #5c3c00;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.alternar-unidade {
+  display: inline-flex;
+}
+
+.alternar-unidade button {
+  font-size: 12px;
+  padding: 3px 10px;
+}
+
+.alternar-unidade button + button {
+  border-left: none;
+}
+
+.alternar-unidade button.ativo {
+  background: var(--texto);
+  color: var(--fundo);
+}
+
+.grafico {
+  position: relative;
+}
+
+.rotulo-grafico {
+  font-size: 11px;
+  fill: var(--texto);
+}
+
+.rotulo-grafico.forte {
+  font-weight: 700;
+}
+
+.rotulo-eixo,
+.valor-grafico {
+  font-size: 10px;
+  fill: var(--texto-secundario);
+  font-variant-numeric: tabular-nums;
+}
+
+.dica-grafico {
+  position: absolute;
+  pointer-events: none;
+  background: var(--fundo);
+  border: 1px solid var(--texto);
+  padding: 4px 6px;
+  font-size: 11px;
+  max-width: 260px;
+  z-index: 2;
+}
+
+.legenda {
+  list-style: none;
+  margin: 4px 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-size: 11px;
+  color: var(--texto-secundario);
+}
+
+.amostra {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  vertical-align: -1px;
+}
+
+.amostra.hachurada {
+  border: 1px solid currentColor;
+  background: repeating-linear-gradient(45deg, currentColor 0 2px, transparent 2px 5px);
+}
+
+.proporcoes {
+  margin: 4px 0;
+  padding-left: 16px;
+  font-size: 12px;
+}
+
+.tabela-rolagem {
+  overflow-x: auto;
+}
+
+.detalhamento {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.detalhamento th,
+.detalhamento td {
+  text-align: left;
+  padding: 3px 4px;
+  border-bottom: 1px solid var(--linha);
+  vertical-align: top;
+}
+
+.detalhamento th {
+  font-weight: 600;
+  color: var(--texto-secundario);
+}
+
+.detalhamento .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.premissas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+}
+
+.premissa {
+  padding: 3px 0;
+  border-bottom: 1px solid var(--linha);
+}
+
+.tipo-premissa {
+  display: inline-block;
+  min-width: 62px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--texto-secundario);
+}
+
+.premissa.pendente .tipo-premissa {
+  color: var(--erro);
+}
+
+.premissa.estimado .tipo-premissa {
+  color: #8a5a00;
 }

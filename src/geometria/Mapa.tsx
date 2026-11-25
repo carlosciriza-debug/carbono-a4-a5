@@ -40,6 +40,8 @@ export type RotaNoMapa = {
   nomePonto: string
   distanciaKm: number
   estimada: boolean
+  /** Peso da rota no total A4 + A5 de cada sistema, já em texto. */
+  peso: string
   geometria: Feature<LineString>
 }
 
@@ -85,6 +87,7 @@ function colecaoDeRotas(rotas: RotaNoMapa[]): FeatureCollection<LineString> {
         nomePonto: r.nomePonto,
         distanciaKm: r.distanciaKm,
         estimada: r.estimada,
+        peso: r.peso,
       },
     })),
   }
@@ -98,7 +101,7 @@ function textoRota(p: Record<string, unknown>): HTMLElement {
   const linhas = [
     String(p.nomePonto),
     `${Number(p.distanciaKm).toLocaleString('pt-BR', { maximumFractionDigits: 1 })} km${p.estimada ? ' (estimado)' : ' por estrada'}`,
-    'Peso no carbono: calculado na etapa 5',
+    `Peso no total A4 + A5: ${p.peso}`,
   ].map((t) => {
     const linha = document.createElement('p')
     linha.textContent = t

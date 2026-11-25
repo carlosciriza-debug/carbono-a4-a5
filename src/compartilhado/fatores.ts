@@ -7,6 +7,7 @@ export type Fator = {
   url: string
   ano: number | null
   verificado: boolean
+  citacao?: string // forma curta, para a interface
   nota?: string
 }
 

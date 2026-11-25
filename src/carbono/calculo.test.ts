@@ -116,6 +116,19 @@ describe('casos especiais', () => {
     expect(r.pendencias).toContain('Movimento de terra: fator de escavação sem fonte.')
   })
 
+  it('sem massas e sem terra, A5 fica pendente (não zero)', () => {
+    const vazio: Sistema = { ...sistema, materiais: sistema.materiais.map((m) => ({ ...m, intensidade: f(null) })) }
+    const r = calcularSistema(vazio, { areaConstruidaM2: 1000, volumeTerraM3: 0 }, rotas, fatores)
+    expect(r.a5KgCO2e).toBeNull()
+    expect(r.a4KgCO2e).toBeNull()
+  })
+
+  it('material pendente não gera aviso de substituição', () => {
+    const semAco: Sistema = { ...sistema, materiais: [{ ...sistema.materiais[1], intensidade: f(null) }] }
+    const r = calcularSistema(semAco, edificio, rotas, fatores)
+    expect(r.avisos).toEqual([])
+  })
+
   it('massa por m² sem fonte deixa o material pendente', () => {
     const semAco: Sistema = { ...sistema, materiais: [{ ...sistema.materiais[1], intensidade: f(null) }] }
     const r = calcularSistema(semAco, edificio, rotas, fatores)
