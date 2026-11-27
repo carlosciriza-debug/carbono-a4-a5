@@ -562,3 +562,26 @@ input.numero {
 .premissa.estimado .tipo-premissa {
   color: #8a5a00;
 }
+
+/* F7: controle compacto, sem alterar o painel das etapas anteriores. */
+.contexto3d {
+  max-width: 230px;
+}
+.contexto3d button {
+  min-height: 36px;
+  background: #f3f3f3;
+  border: 1px solid #696969;
+  border-radius: 2px;
+}
+.contexto3d button[aria-pressed='true'] {
+  background: #242424;
+  color: #fff;
+}
+.contexto3d-legenda {
+  margin-top: 4px;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid #696969;
+  font: 11px/1.4 system-ui, sans-serif;
+  color: #242424;
+}
