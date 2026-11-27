@@ -2,20 +2,21 @@ name: Publicar no GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  group: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'pages' }}
   cancel-in-progress: false
 
 jobs:
-  build:
+  verificar:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -25,14 +26,58 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
-      - run: npm run build
+      - run: npm run build -- --base=/carbono-a4-a5/dev/
+
+  build:
+    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          path: producao
+          persist-credentials: false
+      - uses: actions/checkout@v7
+        with:
+          ref: dev
+          path: previa
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: |
+            producao/package-lock.json
+            previa/package-lock.json
+      - name: Compilar produção
+        working-directory: producao
+        run: |
+          npm ci
+          npm test
+          npm run build -- --base=/carbono-a4-a5/
+      - name: Compilar prévia
+        working-directory: previa
+        run: |
+          npm ci
+          npm test
+          npm run build -- --base=/carbono-a4-a5/dev/
+      - name: Reunir versões
+        run: |
+          mkdir -p site/dev
+          cp -a producao/dist/. site/
+          cp -a previa/dist/. site/dev/
+          test -f site/index.html
+          test -f site/dev/index.html
       - uses: actions/upload-pages-artifact@v5
         with:
-          path: dist
+          path: site
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
