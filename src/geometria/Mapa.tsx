@@ -16,6 +16,7 @@ import { CATEGORIA_POR_ID } from '../compartilhado/categorias'
 import type { Ponto } from '../compartilhado/terreno'
 import { calcularLote, type Lote } from './lote'
 import type { ResultadoBusca } from './busca'
+import { instalarContexto3D } from '../visualizacao/contexto3d'
 
 // Mapa base aberto, sem chave. A atribuição ao OpenStreetMap é adicionada pelo MapLibre.
 const ESTILO_MAPA = 'https://tiles.openfreemap.org/styles/positron'
@@ -171,6 +172,8 @@ export function Mapa({ ref, pontos, rotas, escolhendoLocal, aoEscolherLocal, aoA
     mapa.current = m
 
     m.on('load', () => {
+      // Contexto primeiro: rotas, pontos e desenho entram acima dos volumes.
+      instalarContexto3D(m)
       // Rotas abaixo dos pontos; linha tracejada quando a distância é estimada.
       m.addSource('rotas', { type: 'geojson', data: colecaoDeRotas(rotasAtuais.current) })
       for (const [id, estimada] of [
@@ -267,9 +270,9 @@ export function Mapa({ ref, pontos, rotas, escolhendoLocal, aoEscolherLocal, aoA
         modes: [
           new TerraDrawPolygonMode({
             styles: {
-              fillColor: PRETO,
-              fillOpacity: 0.08,
-              outlineColor: PRETO,
+              fillColor: '#E8B923',
+              fillOpacity: 0.24,
+              outlineColor: '#E8B923',
               outlineWidth: 2,
               closingPointColor: PRETO,
               closingPointOutlineColor: '#ffffff',
@@ -285,9 +288,9 @@ export function Mapa({ ref, pontos, rotas, escolhendoLocal, aoEscolherLocal, aoA
               },
             },
             styles: {
-              selectedPolygonColor: PRETO,
-              selectedPolygonFillOpacity: 0.12,
-              selectedPolygonOutlineColor: PRETO,
+              selectedPolygonColor: '#E8B923',
+              selectedPolygonFillOpacity: 0.24,
+              selectedPolygonOutlineColor: '#E8B923',
               selectedPolygonOutlineWidth: 2,
               selectionPointColor: '#ffffff',
               selectionPointOutlineColor: PRETO,
